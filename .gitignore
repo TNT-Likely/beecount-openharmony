@@ -16,7 +16,6 @@ CLAUDE.md
 PROJECT_IMPROVEMENTS.md
 assets/config.json
 
-
 # IntelliJ related
 *.iml
 *.ipr
@@ -54,3 +53,6 @@ android/app/*.keystore
 
 .docs
 .tmp
+
+# FVM Version Cache
+.fvm/
