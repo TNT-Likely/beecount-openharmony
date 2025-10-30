@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
@@ -27,19 +27,11 @@ class ImportPage extends ConsumerStatefulWidget {
 class _ImportPageState extends ConsumerState<ImportPage> {
   final _controller = TextEditingController();
   final bool _hasHeader = true;
-  PlatformFile? _picked;
+  XFile? _picked;
   bool _reading = false;
   double? _readProgress; // 0~1
   bool _cancelRead = false;
   BillSourceType _billType = BillSourceType.generic; // 默认通用CSV
-
-  @override
-  void initState() {
-    super.initState();
-    // 访问一次平台通道，促使插件在部分场景下完成注册（修复热重载后 MissingPluginException 的偶现）
-    // ignore: unawaited_futures
-    FilePicker.platform.clearTemporaryFiles();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,44 +165,49 @@ class _ImportPageState extends ConsumerState<ImportPage> {
 
   Future<void> _pickFile() async {
     try {
-      final res = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['csv', 'tsv', 'txt', 'xlsx'],
-        allowMultiple: false,
-        withData: true, // iOS 模拟器/沙盒下读取 bytes
+      const XTypeGroup typeGroup = XTypeGroup(
+        label: 'documents',
+        extensions: ['csv', 'tsv', 'txt', 'xlsx'],
       );
+
+      final XFile? file = await openFile(
+        acceptedTypeGroups: [typeGroup],
+      );
+
       if (!context.mounted) return;
-      if (res != null && res.files.isNotEmpty) {
-        setState(() => _picked = res.files.first);
+      if (file != null) {
+        setState(() => _picked = file);
         // 选中即进入确认页
         await _onImport();
         if (!context.mounted) return;
       }
-    } on Exception catch (e) {
+    } catch (e, stackTrace) {
       if (!mounted) return;
+      print('❌ FileSelector error: $e');
+      print('Stack trace: $stackTrace');
       showToast(context, AppLocalizations.of(context)!.importFileOpenError(e.toString()));
     }
   }
 
   // 流式读取文件并显示进度（State 内部方法，可使用 setState）
-  Future<String> _readFileStreaming(PlatformFile picked) async {
+  Future<String> _readFileStreaming(XFile picked) async {
     if (!mounted) return '';
 
     // 检查文件扩展名
     final fileName = picked.name.toLowerCase();
     final isXlsx = fileName.endsWith('.xlsx');
 
-    if (picked.path == null || picked.path!.isEmpty) {
-      final b = picked.bytes;
-      if (b == null || b.isEmpty) return '';
-      return isXlsx ? _convertXlsxBytes(b) : _decodeBytes(b);
-    }
-    final file = File(picked.path!);
+    final path = picked.path;
+    final file = File(path);
     final exists = await file.exists();
     if (!exists) {
-      final b = picked.bytes;
-      if (b == null || b.isEmpty) return '';
-      return isXlsx ? _convertXlsxBytes(b) : _decodeBytes(b);
+      // 尝试读取字节
+      try {
+        final bytes = await picked.readAsBytes();
+        return isXlsx ? _convertXlsxBytes(bytes) : _decodeBytes(bytes);
+      } catch (e) {
+        return '';
+      }
     }
 
     const int chunkSize = 256 * 1024; // 256KB

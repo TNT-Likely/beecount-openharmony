@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import '../services/category_service.dart';
-import 'package:drift/native.dart';
+// import 'package:drift/native.dart';
+import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:drift_sqflite/drift_sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
@@ -274,8 +276,11 @@ class BeeDatabase extends _$BeeDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'beecount.sqlite'));
-    return NativeDatabase.createInBackground(file);
+    // 使用 sqflite（兼容 Android/iOS 和 OpenHarmony）
+    // SqfliteQueryExecutor 会自动使用 getDatabasesPath()
+    return SqfliteQueryExecutor.inDatabaseFolder(
+      path: 'beecount.sqlite',
+      logStatements: true,
+    );
   });
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -91,13 +91,14 @@ class _ExportPageState extends ConsumerState<ExportPage> {
         directory = docDir.path;
         shareAfter = true;
       } else {
-        directory = await FilePicker.platform.getDirectoryPath(
-          dialogTitle: AppLocalizations.of(context)!.exportSelectFolder,
+        final directoryPath = await getDirectoryPath(
+          confirmButtonText: AppLocalizations.of(context)!.exportSelectFolder,
         );
-        if (directory == null) {
+        if (directoryPath == null) {
           setState(() => exporting = false);
           return;
         }
+        directory = directoryPath;
       }
 
       final q = (repo.db.select(repo.db.transactions)

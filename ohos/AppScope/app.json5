@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.tntlikely.beecount.beecount",
+    "bundleName": "com.tntlikely.beecount",
     "vendor": "example",
     "versionCode": 1000000,
     "versionName": "1.0.0",
