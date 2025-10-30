@@ -56,3 +56,6 @@ android/app/*.keystore
 
 # FVM Version Cache
 .fvm/
+
+# OpenHarmony dependencies
+ohos_deps/
