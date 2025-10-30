@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 导出方法：app-store（用于 App Store/TestFlight） -->
+    <key>method</key>
+    <string>app-store</string>
+
+    <!-- 团队 ID（需要替换为实际的 Team ID） -->
+    <key>teamID</key>
+    <string>YOUR_TEAM_ID</string>
+
+    <!-- 不上传 bitcode（Apple 已弃用） -->
+    <key>uploadBitcode</key>
+    <false/>
+
+    <!-- 上传符号表（用于崩溃分析） -->
+    <key>uploadSymbols</key>
+    <true/>
+
+    <!-- 签名方式：manual（手动管理） -->
+    <key>signingStyle</key>
+    <string>manual</string>
+
+    <!-- 签名证书 -->
+    <key>signingCertificate</key>
+    <string>Apple Distribution</string>
+
+    <!-- Provisioning Profiles 映射 -->
+    <key>provisioningProfiles</key>
+    <dict>
+        <!-- 需要替换为实际的 Bundle ID 和 Provisioning Profile 名称 -->
+        <key>com.tntlikely.beecount</key>
+        <string>BeeCount_AppStore</string>
+    </dict>
+</dict>
+</plist>

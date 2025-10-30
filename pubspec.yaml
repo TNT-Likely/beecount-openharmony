@@ -1,0 +1,85 @@
+name: beecount
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  drift: ^2.20.2
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  intl: ^0.19.0
+  fl_chart: ^0.68.0
+  shared_preferences: ^2.3.2
+  csv: ^5.0.2
+  file_picker: ^8.1.2
+  supabase_flutter: ^2.5.6
+  crypto: ^3.0.5
+  flutter_svg: ^2.0.10+1
+  package_info_plus: ^8.0.2
+  url_launcher: ^6.3.0
+  http: ^1.2.2
+  share_plus: ^10.0.0
+  permission_handler: ^11.3.1
+  dio: ^5.4.3+1
+  open_filex: ^4.4.0
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+  flutter_list_view: ^1.1.29
+  visibility_detector: ^0.4.0+2
+  reorderable_grid_view: ^2.2.8
+  excel: ^4.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.10
+  drift_dev: ^2.20.2
+  flutter_launcher_icons: ^0.13.1
+  # Testing framework enhancements
+  mocktail: ^1.0.4
+  integration_test:
+    sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/logo2.png
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/logo.svg
+    - assets/bee.svg
+    - assets/logo.png
+    - assets/logo2.png
+  # 字体已移动到可选依赖，使用系统字体以减少应用体积
+  # fonts:
+  #   - family: Inter
+  #     fonts:
+  #       - asset: assets/fonts/Inter-Regular.ttf
+  #       - asset: assets/fonts/Inter-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/Inter-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Inter-Bold.ttf
+  #         weight: 700
+  #   - family: NotoSansSC
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansSC-Regular.ttf
+  #       - asset: assets/fonts/NotoSansSC-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/NotoSansSC-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/NotoSansSC-Bold.ttf
+  #         weight: 700
