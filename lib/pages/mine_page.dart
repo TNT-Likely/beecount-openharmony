@@ -722,93 +722,95 @@ class MinePage extends ConsumerWidget {
       margin: EdgeInsets.fromLTRB(
           12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
       child: Column(children: [
-        AppListTile(
-          leading: Icons.info_outline,
-          title: AppLocalizations.of(context).mineAboutTitle,
-          onTap: () async {
-            final info = await _getAppInfo();
-            if (!context.mounted) return;
-            final versionText = info.version.startsWith('dev-')
-                ? '${info.version} (${info.buildNumber})'
-                : info.version;
-            final msg =
-                '${AppLocalizations.of(context).mineAboutAppName}\n${AppLocalizations.of(context).mineAboutVersion(versionText)}\n${AppLocalizations.of(context).mineAboutRepo}\n${AppLocalizations.of(context).mineAboutLicense}';
-            await AppDialog.info<void>(
-              context,
-              title: AppLocalizations.of(context).mineAboutTitle,
-              message: msg,
-              okLabel: AppLocalizations.of(context).mineAboutOpenGitHub,
-              onOk: () async {
-                final url = Uri.parse('https://github.com/TNT-Likely/BeeCount');
-                await _tryOpenUrl(url);
-              },
-            );
-          },
-        ),
+        // 隐藏"关于"功能 - OpenHarmony版本
+        // AppListTile(
+        //   leading: Icons.info_outline,
+        //   title: AppLocalizations.of(context).mineAboutTitle,
+        //   onTap: () async {
+        //     final info = await _getAppInfo();
+        //     if (!context.mounted) return;
+        //     final versionText = info.version.startsWith('dev-')
+        //         ? '${info.version} (${info.buildNumber})'
+        //         : info.version;
+        //     final msg =
+        //         '${AppLocalizations.of(context).mineAboutAppName}\n${AppLocalizations.of(context).mineAboutVersion(versionText)}\n${AppLocalizations.of(context).mineAboutRepo}\n${AppLocalizations.of(context).mineAboutLicense}';
+        //     await AppDialog.info<void>(
+        //       context,
+        //       title: AppLocalizations.of(context).mineAboutTitle,
+        //       message: msg,
+        //       okLabel: AppLocalizations.of(context).mineAboutOpenGitHub,
+        //       onOk: () async {
+        //         final url = Uri.parse('https://github.com/TNT-Likely/BeeCount');
+        //         await _tryOpenUrl(url);
+        //       },
+        //     );
+        //   },
+        // ),
+        // 隐藏"检查更新"功能 - OpenHarmony版本
         // iOS 平台隐藏检查更新功能（使用 App Store/TestFlight 分发）
-        if (!Platform.isIOS) ...[
-          AppDivider.thin(),
-          Consumer(builder: (context, ref2, child) {
-            final isLoading = ref2.watch(checkUpdateLoadingProvider);
-            final downloadProgress = ref2.watch(updateProgressProvider);
-
-            // 确定显示状态
-            bool showProgress = false;
-            String title = AppLocalizations.of(context).mineCheckUpdate;
-            String? subtitle;
-            IconData icon = Icons.system_update_alt_outlined;
-            Widget? trailing;
-
-            if (isLoading) {
-              title = AppLocalizations.of(context).mineCheckUpdateDetecting;
-              subtitle =
-                  AppLocalizations.of(context).mineCheckUpdateSubtitleDetecting;
-              icon = Icons.hourglass_empty;
-              trailing = const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2));
-            } else if (downloadProgress.isActive) {
-              showProgress = true;
-              title = AppLocalizations.of(context).mineUpdateDownloadTitle;
-              icon = Icons.download_outlined;
-              trailing = SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    value: downloadProgress.progress,
-                  ));
-            }
-
-            return AppListTile(
-              leading: icon,
-              title: title,
-              subtitle: showProgress ? downloadProgress.status : subtitle,
-              trailing: trailing,
-              onTap: (isLoading || showProgress)
-                  ? null
-                  : () async {
-                      await UpdateService.checkUpdateWithUI(
-                        context,
-                        setLoading: (loading) => ref2
-                            .read(checkUpdateLoadingProvider.notifier)
-                            .state = loading,
-                        setProgress: (progress, status) {
-                          if (status.isEmpty) {
-                            ref2.read(updateProgressProvider.notifier).state =
-                                UpdateProgress.idle();
-                          } else {
-                            ref2.read(updateProgressProvider.notifier).state =
-                                UpdateProgress.active(progress, status);
-                          }
-                        },
-                      );
-                    },
-            );
-          }),
-        ],
-        AppDivider.thin(),
+        // if (!Platform.isIOS) ...[
+        //   AppDivider.thin(),
+        //   Consumer(builder: (context, ref2, child) {
+        //     final isLoading = ref2.watch(checkUpdateLoadingProvider);
+        //     final downloadProgress = ref2.watch(updateProgressProvider);
+        //
+        //     // 确定显示状态
+        //     bool showProgress = false;
+        //     String title = AppLocalizations.of(context).mineCheckUpdate;
+        //     String? subtitle;
+        //     IconData icon = Icons.system_update_alt_outlined;
+        //     Widget? trailing;
+        //
+        //     if (isLoading) {
+        //       title = AppLocalizations.of(context).mineCheckUpdateDetecting;
+        //       subtitle =
+        //           AppLocalizations.of(context).mineCheckUpdateSubtitleDetecting;
+        //       icon = Icons.hourglass_empty;
+        //       trailing = const SizedBox(
+        //           width: 20,
+        //           height: 20,
+        //           child: CircularProgressIndicator(strokeWidth: 2));
+        //     } else if (downloadProgress.isActive) {
+        //       showProgress = true;
+        //       title = AppLocalizations.of(context).mineUpdateDownloadTitle;
+        //       icon = Icons.download_outlined;
+        //       trailing = SizedBox(
+        //           width: 20,
+        //           height: 20,
+        //           child: CircularProgressIndicator(
+        //             strokeWidth: 2,
+        //             value: downloadProgress.progress,
+        //           ));
+        //     }
+        //
+        //     return AppListTile(
+        //       leading: icon,
+        //       title: title,
+        //       subtitle: showProgress ? downloadProgress.status : subtitle,
+        //       trailing: trailing,
+        //       onTap: (isLoading || showProgress)
+        //           ? null
+        //           : () async {
+        //               await UpdateService.checkUpdateWithUI(
+        //                 context,
+        //                 setLoading: (loading) => ref2
+        //                     .read(checkUpdateLoadingProvider.notifier)
+        //                     .state = loading,
+        //                 setProgress: (progress, status) {
+        //                   if (status.isEmpty) {
+        //                     ref2.read(updateProgressProvider.notifier).state =
+        //                         UpdateProgress.idle();
+        //                   } else {
+        //                     ref2.read(updateProgressProvider.notifier).state =
+        //                         UpdateProgress.active(progress, status);
+        //                   }
+        //                 },
+        //               );
+        //             },
+        //     );
+        //   }),
+        // ],
+        // AppDivider.thin(),
         AppListTile(
           leading: Icons.feedback_outlined,
           title: AppLocalizations.of(context).mineFeedback,

@@ -94,7 +94,8 @@ Future<void> _restoreUserReminder() async {
     if (isEnabled) {
       final hour = prefs.getInt('reminder_hour') ?? 21;
       final minute = prefs.getInt('reminder_minute') ?? 0;
-      print('✅ 发现用户已启用记账提醒: ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}');
+      print(
+          '✅ 发现用户已启用记账提醒: ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}');
       print('🔔 正在重新设置提醒任务...');
 
       final notificationUtil = NotificationFactory.getInstance();
@@ -157,12 +158,12 @@ class MainApp extends ConsumerWidget {
     // 检查应用初始化状态
     final initState = ref.watch(appInitStateProvider);
     final selectedLanguage = ref.watch(languageProvider);
-    
+
     // 如果是启屏状态，启动初始化
     if (initState == AppInitState.splash) {
       ref.watch(appSplashInitProvider);
     }
-    
+
     final primary = ref.watch(primaryColorProvider);
     final platform = Theme.of(context).platform; // 当前平台
     final base = BeeTheme.lightTheme(platform: platform);
@@ -234,7 +235,7 @@ class MainApp extends ConsumerWidget {
         scrollBehavior: const NoGlowScrollBehavior(),
         debugShowCheckedModeBanner: false,
         theme: theme,
-        darkTheme: BeeTheme.darkTheme(),
+        darkTheme: BeeTheme.lightTheme(),
         navigatorObservers: [LoggingNavigatorObserver()],
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -254,12 +255,16 @@ class MainApp extends ConsumerWidget {
         ],
         locale: selectedLanguage,
         // 显式命名根路由，便于路由日志与 popUntil 精确识别
-        home: initState == AppInitState.ready ? const BeeApp() : const SplashPage(),
+        home: initState == AppInitState.ready
+            ? const BeeApp()
+            : const SplashPage(),
         onGenerateRoute: (settings) {
           if (settings.name == Navigator.defaultRouteName ||
               settings.name == '/') {
             return MaterialPageRoute(
-                builder: (_) => initState == AppInitState.ready ? const BeeApp() : const SplashPage(),
+                builder: (_) => initState == AppInitState.ready
+                    ? const BeeApp()
+                    : const SplashPage(),
                 settings: const RouteSettings(name: '/'));
           }
           return null;
