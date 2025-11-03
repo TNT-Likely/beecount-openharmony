@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 import '../data/db.dart';
 import '../widgets/ui/ui.dart';
+import '../widgets/biz/amount_text.dart';
 import '../utils/currencies.dart';
 import '../utils/sync_helpers.dart';
 import '../utils/logger.dart';
-import '../utils/format_utils.dart';
 import '../l10n/app_localizations.dart';
 
 class LedgersPage extends ConsumerWidget {
@@ -319,7 +319,6 @@ class _LedgerBalance extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final balanceAsync = ref.watch(currentBalanceProvider(ledgerId));
     final ledgerAsync = ref.watch(ledgerByIdProvider(ledgerId));
-    final selectedLocale = ref.watch(languageProvider);
 
     final balance = balanceAsync.asData?.value;
     final ledger = ledgerAsync.asData?.value;
@@ -331,17 +330,25 @@ class _LedgerBalance extends ConsumerWidget {
       );
     }
 
-    final currencyCode = ledger?.currency ?? 'CNY';
-    final isChineseLocale = selectedLocale?.languageCode == 'zh' ||
-        (selectedLocale == null && Localizations.localeOf(context).languageCode == 'zh');
-
-    return Text(
-      AppLocalizations.of(context).ledgersBalance(formatBalance(balance, currencyCode, isChineseLocale: isChineseLocale)),
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: balance >= 0
-          ? Theme.of(context).textTheme.bodySmall?.color
-          : Colors.red,
-      ),
+    return Row(
+      children: [
+        Text(
+          '${AppLocalizations.of(context).ledgersBalance('')}：',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        AmountText(
+          value: balance,
+          signed: false,
+          showCurrency: true,
+          useCompactFormat: true,
+          currencyCode: ledger?.currency, // 使用该账本的币种
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: balance >= 0
+              ? Theme.of(context).textTheme.bodySmall?.color
+              : Colors.red,
+          ),
+        ),
+      ],
     );
   }
 }

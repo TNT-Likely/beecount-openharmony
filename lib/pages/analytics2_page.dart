@@ -499,6 +499,7 @@ class _Analytics2PageState extends ConsumerState<Analytics2Page> {
                             ?.value ??
                         false) ||
                     _localChartDismissed;
+                final hide = ref.watch(hideAmountsProvider);
 
                 return GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -535,6 +536,7 @@ class _Analytics2PageState extends ConsumerState<Analytics2Page> {
                               : Colors.grey.shade400,
                           xLabels: xLabels,
                           highlightIndex: highlightIndex,
+                          hideAmounts: hide,
                           themeColor: _expenseLineActive
                               ? Colors.red
                               : Colors.grey.shade400,

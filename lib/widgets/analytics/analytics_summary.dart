@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../styles/colors.dart';
 import '../../styles/design.dart';
 import '../../l10n/app_localizations.dart';
+import '../biz/amount_text.dart';
 
-class AnalyticsSummary extends StatelessWidget {
+class AnalyticsSummary extends ConsumerWidget {
   final String scope; // month/year/all
   final bool isExpense;
   final double total;
@@ -18,7 +20,6 @@ class AnalyticsSummary extends StatelessWidget {
   final Color? expenseColor; // 支出颜色
   final Color? incomeColor; // 收入颜色
   final bool isBalance; // 是否是结余视角
-
   const AnalyticsSummary({
     super.key,
     required this.scope,
@@ -36,12 +37,10 @@ class AnalyticsSummary extends StatelessWidget {
     this.incomeColor,
     this.isBalance = false,
   });
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final grey = BeeColors.secondaryText;
-    final l10n = AppLocalizations.of(context)!;
-
+    final l10n = AppLocalizations.of(context);
     String avgLabel;
     switch (scope) {
       case 'year':
@@ -54,7 +53,6 @@ class AnalyticsSummary extends StatelessWidget {
       default:
         avgLabel = l10n.analyticsDailyAvg;
     }
-
     if (isSummary) {
       // 汇总视角：显示收入、支出、结余
       final expense = expenseTotal ?? 0.0;
@@ -62,7 +60,6 @@ class AnalyticsSummary extends StatelessWidget {
       final balance = income - expense;
       final expenseAvgValue = expenseAvg ?? 0.0;
       final incomeAvgValue = incomeAvg ?? 0.0;
-
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -80,11 +77,15 @@ class AnalyticsSummary extends StatelessWidget {
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(color: grey)),
-                          Text(income.toStringAsFixed(2),
+                          AmountText(
+                              value: income,
+                              signed: false,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
-                                  ?.copyWith(color: incomeColor ?? Colors.green, fontWeight: FontWeight.w600)),
+                                  ?.copyWith(
+                                      color: incomeColor ?? Colors.green,
+                                      fontWeight: FontWeight.w600)),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -95,7 +96,9 @@ class AnalyticsSummary extends StatelessWidget {
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(color: grey)),
-                          Text(incomeAvgValue.toStringAsFixed(2),
+                          AmountText(
+                              value: incomeAvgValue,
+                              signed: false,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -117,11 +120,15 @@ class AnalyticsSummary extends StatelessWidget {
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(color: grey)),
-                          Text(expense.toStringAsFixed(2),
+                          AmountText(
+                              value: expense,
+                              signed: false,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
-                                  ?.copyWith(color: expenseColor ?? Colors.red, fontWeight: FontWeight.w600)),
+                                  ?.copyWith(
+                                      color: expenseColor ?? Colors.red,
+                                      fontWeight: FontWeight.w600)),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -132,7 +139,9 @@ class AnalyticsSummary extends StatelessWidget {
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(color: grey)),
-                          Text(expenseAvgValue.toStringAsFixed(2),
+                          AmountText(
+                              value: expenseAvgValue,
+                              signed: false,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -152,13 +161,12 @@ class AnalyticsSummary extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(color: grey)),
-              Text(balance.toStringAsFixed(2),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(
-                          color: balance >= 0 ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.w600)),
+              AmountText(
+                  value: balance,
+                  signed: false,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: balance >= 0 ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.w600)),
             ],
           ),
           const SizedBox(height: 8),
@@ -172,8 +180,9 @@ class AnalyticsSummary extends StatelessWidget {
           : (isExpense ? l10n.analyticsExpense : l10n.analyticsIncome);
       final color = isBalance
           ? (total >= 0 ? Colors.green : Colors.red)
-          : (isExpense ? (expenseColor ?? Colors.red) : (incomeColor ?? Colors.green));
-
+          : (isExpense
+              ? (expenseColor ?? Colors.red)
+              : (incomeColor ?? Colors.green));
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -184,7 +193,9 @@ class AnalyticsSummary extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(color: grey)),
-              Text(total.toStringAsFixed(2),
+              AmountText(
+                  value: total,
+                  signed: false,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -199,7 +210,9 @@ class AnalyticsSummary extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(color: grey)),
-              Text(avg.toStringAsFixed(2),
+              AmountText(
+                  value: avg,
+                  signed: false,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium

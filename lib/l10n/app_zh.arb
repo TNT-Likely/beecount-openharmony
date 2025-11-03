@@ -134,7 +134,6 @@
   "categoryIncome": "收入分类",
   "categoryEmpty": "暂无分类",
   "categoryDefault": "默认分类",
-  "categoryCustomTag": "自定义",
   "categoryReorderTip": "长按分类可拖拽调整顺序",
   "categoryLoadFailed": "加载失败: {error}",
 
@@ -206,7 +205,7 @@
   "mineCloudServiceCustom": "自定义 Supabase",
   "mineCloudServiceWebDAV": "自定义云服务 (WebDAV)",
   "mineFirstFullUpload": "首次全量上传",
-  "mineFirstFullUploadSubtitle": "将所有本地账本上传到当前 Supabase",
+  "mineFirstFullUploadSubtitle": "将所有本地账本上传到云端",
   "mineFirstFullUploadComplete": "完成",
   "mineFirstFullUploadMessage": "已上传当前账本。其它账本请切换后再上传。",
   "mineFirstFullUploadFailed": "失败",
@@ -228,12 +227,14 @@
   "mineSyncMessage": "说明: {message}",
   "mineUploadTitle": "上传",
   "mineUploadNeedLogin": "需登录",
+  "mineUploadNeedCloudService": "仅限云服务模式可用",
   "mineUploadInProgress": "正在上传中…",
   "mineUploadRefreshing": "刷新中…",
   "mineUploadSynced": "已同步",
   "mineUploadSuccess": "已上传",
   "mineUploadSuccessMessage": "当前账本已同步到云端",
   "mineDownloadTitle": "下载",
+  "mineDownloadNeedCloudService": "仅限云服务模式可用",
   "mineDownloadComplete": "完成",
   "mineDownloadResult": "新增导入：{inserted} 条\n已存在跳过：{skipped} 条\n清理历史重复：{deleted} 条",
   "mineLoginTitle": "登录 / 注册",
@@ -246,6 +247,7 @@
   "mineAutoSyncTitle": "自动同步账本",
   "mineAutoSyncSubtitle": "记账后自动上传到云端",
   "mineAutoSyncNeedLogin": "需登录后可开启",
+  "mineAutoSyncNeedCloudService": "仅限云服务模式可用",
   "mineImportProgressTitle": "后台导入中…",
   "mineImportProgressSubtitle": "进度：{done}/{total}，成功 {ok}，失败 {fail}",
   "mineImportCompleteTitle": "导入完成",
@@ -270,10 +272,6 @@
   "mineUpdateDownload": "下载更新",
   "mineFeedback": "问题反馈",
   "mineFeedbackSubtitle": "提交问题或建议",
-  "mineRefreshStats": "刷新统计信息（临时）",
-  "mineRefreshStatsSubtitle": "触发全局统计 Provider 重新计算",
-  "mineRefreshSync": "刷新同步状态（临时）",
-  "mineRefreshSyncSubtitle": "触发同步状态 Provider 重新获取",
 
   "categoryEditTitle": "编辑分类",
   "categoryNewTitle": "新建分类",
@@ -475,7 +473,7 @@
   "reminderIOSTestTitle": "iOS通知测试",
   "reminderIOSTestMessage": "已发送测试通知。\n\n🍎 iOS模拟器限制：\n• 通知可能不会在通知中心显示\n• 横幅提醒可能不工作\n• 但Xcode控制台会显示日志\n\n💡 调试方法：\n• 查看Xcode控制台输出\n• 检查Flutter日志信息\n• 使用真机测试获得完整体验",
   "reminderDescription": "提示：开启记账提醒后，系统会在每天指定时间发送通知提醒您记录收支。",
-  "reminderIOSInstructions": "🍎 iOS通知设置：\n• 设置 > 通知 > 蜜蜂记账\n• 开启\"允许通知\"\n• 设置通知样式：横幅或提醒\n• 开启声音和震动\n\n⚠️ iOS模拟器限制：\n• 模拟器通知功能有限\n• 建议使用真机测试\n• 查看Xcode控制台了解通知状态\n\n如果在模拟器中测试，请观察：\n• Xcode控制台日志输出\n• Flutter Debug Console信息\n• 应用内弹窗确认通知发送",
+  "reminderIOSInstructions": "🍎 iOS通知设置：\n• 设置 > 通知 > 蜜蜂记账\n• 开启\"允许通知\"\n• 设置通知样式：横幅或提醒\n• 开启声音和震动\n\n⚠️ 重要提示：\n• iOS本地通知依赖应用进程\n• 请勿在任务管理器中划掉应用\n• 应用在后台或前台时通知正常\n• 完全关闭应用会导致通知失效\n\n💡 使用建议：\n• 日常使用后直接按Home键退出\n• iOS会自动管理后台应用\n• 保持应用在后台即可收到提醒",
   "reminderAndroidInstructions": "如果通知无法正常工作，请检查：\n• 已允许应用发送通知\n• 关闭应用的电池优化/省电模式\n• 允许应用在后台运行和自启动\n• Android 12+需要精确闹钟权限\n\n📱 小米手机特殊设置：\n• 设置 > 应用管理 > 蜜蜂记账 > 通知管理\n• 点击\"记账提醒\"渠道\n• 设置重要性为\"紧急\"或\"高\"\n• 开启\"横幅通知\"、\"声音\"、\"震动\"\n• 安全中心 > 应用管理 > 权限 > 自启动\n\n🔒 锁定后台方法：\n• 最近任务中找到蜜蜂记账\n• 向下拉动应用卡片显示锁定图标\n• 点击锁定图标防止被清理",
 
   "categoryDetailLoadFailed": "加载失败",
@@ -556,6 +554,7 @@
   "mineDebugRefreshStatsSubtitle": "触发全局统计 Provider 重新计算",
   "mineDebugRefreshSync": "刷新同步状态（临时）",
   "mineDebugRefreshSyncSubtitle": "触发同步状态 Provider 重新获取",
+  "mineAutoSyncNeedCloudService": "仅限云服务模式可用",
 
   "cloudCurrentService": "当前云服务",
   "cloudConnected": "已连接",
@@ -1002,44 +1001,6 @@
   "currencyRUB": "卢布",
   "currencyBYN": "白俄罗斯卢布",
 
-  "supportProjectTitle": "支持项目",
-  "supportProjectWhyTitle": "为什么需要您的支持?",
-  "supportProjectWhyDescription": "蜜蜂记账是完全免费开源的项目,没有任何广告和付费功能。项目的持续运营需要每年续费 Apple 开发者账号（$99/年）以保持 iOS 版本可用。您的支持将帮助项目持续发展,让更多用户受益。",
-  "supportProjectAchievementTitle": "初期目标已完成",
-  "supportProjectAchievementDescription": "感谢所有支持者!首期 iOS TestFlight 公测目标已达成,应用现已上线。",
-  "supportProjectOngoingTitle": "持续运营成本",
-  "supportProjectGoalTitle": "筹款目标",
-  "supportProjectCurrentAmount": "已筹集: {amount}",
-  "@supportProjectCurrentAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectTargetAmount": "目标: {amount}",
-  "@supportProjectTargetAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectProgress": "进度: {progress}",
-  "@supportProjectProgress": {
-    "placeholders": {
-      "progress": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectUsageTitle": "资金用途",
-  "supportProjectUsage1": "每年续费 Apple 开发者账号（$99/年）",
-  "supportProjectUsage2": "持续维护和开发新功能",
-  "supportProjectUsage3": "支持鸿蒙版本等跨平台适配",
-  "supportProjectViewDonationMethods": "查看捐赠方式",
-  "supportProjectNote": "💡 捐赠完全自愿，项目永久免费开源",
-  "supportProjectVoluntaryNote": "您的每一份支持都将用于项目的长期维护，让蜜蜂记账持续为用户服务。",
 
   "webdavConfiguredTitle": "WebDAV 云服务已配置",
   "webdavConfiguredMessage": "WebDAV 云服务使用配置时提供的凭据，无需额外登录。",

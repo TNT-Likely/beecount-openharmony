@@ -461,7 +461,7 @@ class _ImportConfirmPageState extends ConsumerState<ImportConfirmPage> {
                     value: percent > 0 && percent < 1 ? percent : null),
                 const SizedBox(height: 8),
                 // 实时进度文案（每50条更新一次，足够流畅）
-                Text(AppLocalizations.of(context)!.importProgressDetail(p.done, p.total, p.ok, p.fail),
+                Text(AppLocalizations.of(context)!.importProgressDetail(p.done, p.fail, p.ok, p.total),
                     style: Theme.of(dctx)
                         .textTheme
                         .bodySmall
@@ -665,7 +665,7 @@ class _ImportConfirmPageState extends ConsumerState<ImportConfirmPage> {
 
     // 显示导入完成提示
     final cancelledText = _cancelled ? AppLocalizations.of(context)!.importCancelled : '';
-    showToast(context, AppLocalizations.of(context)!.importCompleted(cancelledText, ok, fail));
+    showToast(context, AppLocalizations.of(context)!.importCompleted(cancelledText, fail, ok));
 
     // Handle UI operations before cloud upload
     if (dialogOpen) {

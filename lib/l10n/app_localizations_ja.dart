@@ -712,7 +712,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mineFirstFullUpload => '初回フルアップロード';
 
   @override
-  String get mineFirstFullUploadSubtitle => 'すべてのローカル家計簿を現在のSupabaseにアップロード';
+  String get mineFirstFullUploadSubtitle => 'すべてのローカル家計簿をクラウドにアップロード';
 
   @override
   String get mineFirstFullUploadComplete => '完了';
@@ -794,6 +794,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mineUploadNeedLogin => 'ログインが必要です';
 
   @override
+  String get mineUploadNeedCloudService => 'クラウドサービスモードでのみ利用可能';
+
+  @override
   String get mineUploadInProgress => 'アップロード中...';
 
   @override
@@ -810,6 +813,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mineDownloadTitle => 'ダウンロード';
+
+  @override
+  String get mineDownloadNeedCloudService => 'クラウドサービスモードでのみ利用可能';
 
   @override
   String get mineDownloadComplete => '完了';
@@ -848,6 +854,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mineAutoSyncNeedLogin => '有効にするにはログインが必要です';
+
+  @override
+  String get mineAutoSyncNeedCloudService => 'クラウドサービスモードでのみ利用可能';
 
   @override
   String get mineImportProgressTitle => 'バックグラウンドでインポート中...';
@@ -2562,60 +2571,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get currencyBYN => 'ベラルーシルーブル';
-
-  @override
-  String get supportProjectTitle => 'プロジェクトを支援';
-
-  @override
-  String get supportProjectWhyTitle => 'なぜご支援が必要ですか?';
-
-  @override
-  String get supportProjectWhyDescription => 'BeeCountは完全無料のオープンソースプロジェクトで、広告や有料機能はありません。ただし、iOSユーザーが利用できるようにするには、アプリに署名するためのApple Developer Account(\$99/年)が必要です。';
-
-  @override
-  String get supportProjectAchievementTitle => 'Initial Goal Achieved';
-
-  @override
-  String get supportProjectAchievementDescription => 'Thanks to all supporters! The first iOS TestFlight beta goal has been achieved, and the app is now live.';
-
-  @override
-  String get supportProjectOngoingTitle => 'Ongoing Operation Costs';
-
-  @override
-  String supportProjectCurrentAmount(String amount) {
-    return '集まった金額: $amount';
-  }
-
-  @override
-  String supportProjectTargetAmount(String amount) {
-    return '目標: $amount';
-  }
-
-  @override
-  String supportProjectProgress(String progress) {
-    return '進捗: $progress';
-  }
-
-  @override
-  String get supportProjectUsageTitle => '寄付金の使い道';
-
-  @override
-  String get supportProjectUsage1 => 'Apple Developer Account年会費(\$99/年)';
-
-  @override
-  String get supportProjectUsage2 => 'TestFlight経由でiOS版を配布';
-
-  @override
-  String get supportProjectUsage3 => 'プロジェクトの継続的な開発とメンテナンス';
-
-  @override
-  String get supportProjectViewDonationMethods => '寄付方法を見る';
-
-  @override
-  String get supportProjectNote => 'ボタンをクリックするとGitHubにリダイレクトされ、詳細な寄付方法が表示されます';
-
-  @override
-  String get supportProjectVoluntaryNote => 'Every contribution goes toward long-term maintenance, keeping BeeCount available for all users.';
 
   @override
   String get webdavConfiguredTitle => 'WebDAV クラウドサービスが設定されました';

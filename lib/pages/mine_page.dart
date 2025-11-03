@@ -8,7 +8,6 @@ import 'import_page.dart';
 import 'login_page.dart';
 import 'export_page.dart';
 import 'personalize_page.dart';
-import 'support_project_page.dart';
 import '../providers.dart';
 import '../widgets/ui/ui.dart';
 import '../widgets/biz/biz.dart';
@@ -21,7 +20,6 @@ import 'cloud_service_page.dart';
 import '../utils/logger.dart';
 import '../services/restore_service.dart';
 import 'restore_progress_page.dart';
-import '../utils/format_utils.dart';
 import '../l10n/app_localizations.dart';
 import 'font_settings_page.dart';
 import 'category_manage_page.dart';
@@ -133,23 +131,12 @@ class MinePage extends ConsumerWidget {
                                 countsForLedgerProvider(currentLedgerId));
                             final balanceAsync = ref
                                 .watch(currentBalanceProvider(currentLedgerId));
-                            final currentLedgerAsync =
-                                ref.watch(currentLedgerProvider);
-                            final selectedLocale = ref.watch(languageProvider);
+                            final currentLedgerAsync = ref.watch(currentLedgerProvider);
 
                             final day = countsAsync.asData?.value.dayCount ?? 0;
                             final tx = countsAsync.asData?.value.txCount ?? 0;
                             final balance = balanceAsync.asData?.value ?? 0.0;
-                            final currentLedger =
-                                currentLedgerAsync.asData?.value;
-                            final currencyCode =
-                                currentLedger?.currency ?? 'CNY';
-                            final isChineseLocale =
-                                selectedLocale?.languageCode == 'zh' ||
-                                    (selectedLocale == null &&
-                                        Localizations.localeOf(context)
-                                                .languageCode ==
-                                            'zh');
+                            final currencyCode = currentLedgerAsync.asData?.value?.currency ?? 'CNY';
 
                             final labelStyle = Theme.of(context)
                                 .textTheme
@@ -179,9 +166,9 @@ class MinePage extends ConsumerWidget {
                                     child: _StatCell(
                                         label: AppLocalizations.of(context)
                                             .mineCurrentBalance,
-                                        value: formatBalance(
-                                            balance, currencyCode,
-                                            isChineseLocale: isChineseLocale),
+                                        value: balance,
+                                        isAmount: true,
+                                        currencyCode: currencyCode,
                                         labelStyle: labelStyle,
                                         numStyle: numStyle.copyWith(
                                           color: balance >= 0
@@ -250,7 +237,12 @@ class MinePage extends ConsumerWidget {
                         stream: authUserStream,
                         builder: (ctx, snap) {
                           final user = snap.data;
-                          final canUseCloud = user != null;
+                          // 检查云服务配置，本地存储模式下禁用云功能
+                          final cloudConfig =
+                              ref.watch(activeCloudConfigProvider);
+                          final isLocalMode = cloudConfig.hasValue &&
+                              cloudConfig.value!.type == CloudBackendType.local;
+                          final canUseCloud = user != null && !isLocalMode;
                           final asyncSt =
                               ref.watch(syncStatusProvider(ledgerId));
                           final cached =
@@ -272,130 +264,18 @@ class MinePage extends ConsumerWidget {
                     ],
                   ),
                 ),
-                // 导入导出
+                // 数据管理
                 SizedBox(height: 8.0.scaled(context, ref)),
-                _buildImportExportSection(context, ref),
-                // 个性化
+                _buildDataManagementSection(context, ref),
+                // 自动化功能
                 SizedBox(height: 8.0.scaled(context, ref)),
-                SectionCard(
-                  margin: EdgeInsets.fromLTRB(12.0.scaled(context, ref), 0,
-                      12.0.scaled(context, ref), 0),
-                  child: Column(
-                    children: [
-                      AppListTile(
-                        leading: Icons.category_outlined,
-                        title:
-                            AppLocalizations.of(context).mineCategoryManagement,
-                        subtitle: AppLocalizations.of(context)
-                            .mineCategoryManagementSubtitle,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const CategoryManagePage()),
-                          );
-                        },
-                      ),
-                      AppDivider.thin(),
-                      AppListTile(
-                        leading: Icons.swap_horiz,
-                        title:
-                            AppLocalizations.of(context).mineCategoryMigration,
-                        subtitle: AppLocalizations.of(context)
-                            .mineCategoryMigrationSubtitle,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const CategoryMigrationPage()),
-                          );
-                        },
-                      ),
-                      AppDivider.thin(),
-                      // 账户管理入口
-                      AppListTile(
-                        leading: Icons.account_balance_wallet_outlined,
-                        title: AppLocalizations.of(context).accountsTitle,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const AccountsPage()),
-                          );
-                        },
-                      ),
-                      AppDivider.thin(),
-                      AppListTile(
-                        leading: Icons.repeat,
-                        title: AppLocalizations.of(context)
-                            .mineRecurringTransactions,
-                        subtitle: AppLocalizations.of(context)
-                            .mineRecurringTransactionsSubtitle,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    const RecurringTransactionPage()),
-                          );
-                        },
-                      ),
-                      AppDivider.thin(),
-                      // 记账提醒 (已隐藏)
-                      // AppListTile(
-                      //   leading: Icons.notifications_outlined,
-                      //   title:
-                      //       AppLocalizations.of(context).mineReminderSettings,
-                      //   subtitle: AppLocalizations.of(context)
-                      //       .mineReminderSettingsSubtitle,
-                      //   onTap: () async {
-                      //     await Navigator.of(context).push(
-                      //       MaterialPageRoute(
-                      //           builder: (_) => const ReminderSettingsPage()),
-                      //     );
-                      //   },
-                      // ),
-                      // AppDivider.thin(),
-                      AppListTile(
-                        leading: Icons.brush_outlined,
-                        title: AppLocalizations.of(context).minePersonalize,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const PersonalizePage()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+                _buildAutomationSection(context, ref),
+                // 外观与显示
                 SizedBox(height: 8.0.scaled(context, ref)),
-                SectionCard(
-                  margin: EdgeInsets.fromLTRB(12.0.scaled(context, ref), 0,
-                      12.0.scaled(context, ref), 0),
-                  child: AppListTile(
-                    leading: Icons.zoom_out_map_outlined,
-                    title: AppLocalizations.of(context).mineDisplayScale,
-                    subtitle:
-                        AppLocalizations.of(context).mineDisplayScaleSubtitle,
-                    onTap: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const FontSettingsPage()),
-                      );
-                    },
-                  ),
-                ),
-                // 语言设置
-                SizedBox(height: 8.0.scaled(context, ref)),
-                _buildLanguageSection(context, ref),
+                _buildAppearanceSection(context, ref),
                 // 关于与版本
                 SizedBox(height: 8.0.scaled(context, ref)),
                 _buildAboutSection(context, ref),
-                // 调试
-                if (!const bool.fromEnvironment('dart.vm.product')) ...[
-                  SizedBox(height: 8.0.scaled(context, ref)),
-                  _buildDebugSection(context, ref),
-                ],
-                // 支持项目（放在最下面）
-                SizedBox(height: 8.0.scaled(context, ref)),
-                _buildSupportSection(context, ref),
                 SizedBox(height: AppDimens.p16.scaled(context, ref)),
               ],
             ),
@@ -617,15 +497,17 @@ class MinePage extends ConsumerWidget {
             title: AppLocalizations.of(context).mineUploadTitle,
             subtitle: isFirstLoad
                 ? null
-                : (!canUseCloud || notLoggedIn)
-                    ? AppLocalizations.of(context).mineUploadNeedLogin
-                    : uploadBusy
-                        ? AppLocalizations.of(context).mineUploadInProgress
-                        : (refreshing
-                            ? AppLocalizations.of(context).mineUploadRefreshing
-                            : (inSync
-                                ? AppLocalizations.of(context).mineUploadSynced
-                                : null)),
+                : !canUseCloud
+                    ? AppLocalizations.of(context).mineUploadNeedCloudService
+                    : notLoggedIn
+                        ? AppLocalizations.of(context).mineUploadNeedLogin
+                        : uploadBusy
+                            ? AppLocalizations.of(context).mineUploadInProgress
+                            : (refreshing
+                                ? AppLocalizations.of(context).mineUploadRefreshing
+                                : (inSync
+                                    ? AppLocalizations.of(context).mineUploadSynced
+                                    : null)),
             enabled: canUseCloud &&
                 !inSync &&
                 !notLoggedIn &&
@@ -687,13 +569,15 @@ class MinePage extends ConsumerWidget {
             title: AppLocalizations.of(context).mineDownloadTitle,
             subtitle: isFirstLoad
                 ? null
-                : (!canUseCloud || notLoggedIn)
-                    ? AppLocalizations.of(context).mineUploadNeedLogin
-                    : (refreshing
-                        ? AppLocalizations.of(context).mineUploadRefreshing
-                        : (inSync
-                            ? AppLocalizations.of(context).mineUploadSynced
-                            : null)),
+                : !canUseCloud
+                    ? AppLocalizations.of(context).mineDownloadNeedCloudService
+                    : notLoggedIn
+                        ? AppLocalizations.of(context).mineUploadNeedLogin
+                        : (refreshing
+                            ? AppLocalizations.of(context).mineUploadRefreshing
+                            : (inSync
+                                ? AppLocalizations.of(context).mineUploadSynced
+                                : null)),
             enabled: canUseCloud &&
                 !inSync &&
                 !notLoggedIn &&
@@ -736,10 +620,18 @@ class MinePage extends ConsumerWidget {
             final userNow = user; // capture
             final cloudConfig = r.watch(activeCloudConfigProvider);
 
+            // 本地存储模式不显示登录入口
+            final isLocalMode = cloudConfig.hasValue &&
+                cloudConfig.value!.type == CloudBackendType.local;
+            if (isLocalMode) {
+              return const SizedBox.shrink();
+            }
+
             // 根据云服务类型显示不同的用户信息
             String getUserDisplayName() {
-              if (userNow == null)
+              if (userNow == null) {
                 return AppLocalizations.of(context).mineLoginTitle;
+              }
 
               if (cloudConfig.hasValue &&
                   cloudConfig.value!.type == CloudBackendType.webdav) {
@@ -752,51 +644,66 @@ class MinePage extends ConsumerWidget {
               }
             }
 
-            return AppListTile(
-              leading:
-                  userNow == null ? Icons.login : Icons.verified_user_outlined,
-              title: getUserDisplayName(),
-              subtitle: userNow == null
-                  ? AppLocalizations.of(context).mineLoginSubtitle
-                  : AppLocalizations.of(context).mineLogoutSubtitle,
-              onTap: () async {
-                if (userNow == null) {
-                  await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const LoginPage()));
-                  ref.read(syncStatusRefreshProvider.notifier).state++;
-                  ref.read(statsRefreshProvider.notifier).state++;
-                } else {
-                  final confirmed = await AppDialog.confirm<bool>(
-                        context,
-                        title:
-                            AppLocalizations.of(context).mineLogoutConfirmTitle,
-                        message: AppLocalizations.of(context)
-                            .mineLogoutConfirmMessage,
-                        okLabel: AppLocalizations.of(context).mineLogoutButton,
-                        cancelLabel: AppLocalizations.of(context).commonCancel,
-                      ) ??
-                      false;
+            return Column(
+              children: [
+                AppListTile(
+                  leading: userNow == null
+                      ? Icons.login
+                      : Icons.verified_user_outlined,
+                  title: getUserDisplayName(),
+                  subtitle: userNow == null
+                      ? AppLocalizations.of(context).mineLoginSubtitle
+                      : AppLocalizations.of(context).mineLogoutSubtitle,
+                  onTap: () async {
+                    if (userNow == null) {
+                      await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const LoginPage()));
+                      ref.read(syncStatusRefreshProvider.notifier).state++;
+                      ref.read(statsRefreshProvider.notifier).state++;
+                    } else {
+                      final confirmed = await AppDialog.confirm<bool>(
+                            context,
+                            title: AppLocalizations.of(context)
+                                .mineLogoutConfirmTitle,
+                            message: AppLocalizations.of(context)
+                                .mineLogoutConfirmMessage,
+                            okLabel:
+                                AppLocalizations.of(context).mineLogoutButton,
+                            cancelLabel:
+                                AppLocalizations.of(context).commonCancel,
+                          ) ??
+                          false;
 
-                  if (confirmed) {
-                    await ref.read(authServiceProvider).signOut();
-                    ref.read(syncStatusRefreshProvider.notifier).state++;
-                    ref.read(statsRefreshProvider.notifier).state++;
-                  }
-                }
-              },
+                      if (confirmed) {
+                        await ref.read(authServiceProvider).signOut();
+                        ref.read(syncStatusRefreshProvider.notifier).state++;
+                        ref.read(statsRefreshProvider.notifier).state++;
+                      }
+                    }
+                  },
+                ),
+                AppDivider.thin(),
+              ],
             );
           }),
-          AppDivider.thin(),
           Consumer(builder: (ctx, r, _) {
             final autoSync = r.watch(autoSyncValueProvider);
             final setter = r.read(autoSyncSetterProvider);
             final value = autoSync.asData?.value ?? false;
             final can = canUseCloud;
+
+            // 检查云服务类型以显示合适的提示信息
+            final cloudConfig = r.watch(activeCloudConfigProvider);
+            final isLocalMode = cloudConfig.hasValue &&
+                cloudConfig.value!.type == CloudBackendType.local;
+
             return SwitchListTile(
               title: Text(AppLocalizations.of(context).mineAutoSyncTitle),
               subtitle: can
                   ? Text(AppLocalizations.of(context).mineAutoSyncSubtitle)
-                  : Text(AppLocalizations.of(context).mineAutoSyncNeedLogin),
+                  : Text(isLocalMode
+                      ? AppLocalizations.of(context).mineAutoSyncNeedCloudService
+                      : AppLocalizations.of(context).mineAutoSyncNeedLogin),
               value: can ? value : false,
               onChanged: can
                   ? (v) async {
@@ -808,63 +715,6 @@ class MinePage extends ConsumerWidget {
         ],
       );
     });
-  }
-
-  Widget _buildImportExportSection(BuildContext context, WidgetRef ref) {
-    return SectionCard(
-      margin: EdgeInsets.fromLTRB(
-          12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
-      child: Column(
-        children: [
-          Consumer(builder: (ctx, r, _) {
-            final p = r.watch(importProgressProvider);
-            if (!p.running && p.total == 0) {
-              return AppListTile(
-                leading: Icons.file_upload_outlined,
-                title: AppLocalizations.of(context).mineImport,
-                onTap: () async {
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ImportPage()),
-                  );
-                },
-              );
-            }
-            if (p.running) {
-              final percent =
-                  p.total == 0 ? null : (p.done / p.total).clamp(0.0, 1.0);
-              return AppListTile(
-                leading: Icons.upload_outlined,
-                title: AppLocalizations.of(context).mineImportProgressTitle,
-                subtitle: AppLocalizations.of(context)
-                    .mineImportProgressSubtitle(p.done, p.total, p.ok, p.fail),
-                trailing: SizedBox(
-                    width: 72, child: LinearProgressIndicator(value: percent)),
-                onTap: null,
-              );
-            }
-            final allOk = (p.done == p.total) && (p.fail == 0);
-            if (allOk) return const _ImportSuccessTile();
-            return AppListTile(
-              leading: Icons.info_outline,
-              title: AppLocalizations.of(context).mineImportCompleteTitle,
-              subtitle:
-                  '${AppLocalizations.of(context).commonSuccess} ${p.ok}，${AppLocalizations.of(context).commonFailed} ${p.fail}',
-              onTap: null,
-            );
-          }),
-          AppDivider.thin(),
-          AppListTile(
-            leading: Icons.file_download_outlined,
-            title: AppLocalizations.of(context).mineExport,
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ExportPage()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildAboutSection(BuildContext context, WidgetRef ref) {
@@ -883,83 +733,81 @@ class MinePage extends ConsumerWidget {
                 : info.version;
             final msg =
                 '${AppLocalizations.of(context).mineAboutAppName}\n${AppLocalizations.of(context).mineAboutVersion(versionText)}\n${AppLocalizations.of(context).mineAboutRepo}\n${AppLocalizations.of(context).mineAboutLicense}';
-            final open = await AppDialog.confirm<bool>(
-                  context,
-                  title: AppLocalizations.of(context).mineAboutTitle,
-                  message: msg,
-                  okLabel: AppLocalizations.of(context).mineAboutOpenGitHub,
-                  cancelLabel: AppLocalizations.of(context).commonClose,
-                ) ??
-                false;
-            if (open) {
-              final url = Uri.parse('https://github.com/TNT-Likely/BeeCount');
-              await _tryOpenUrl(url);
-            }
+            await AppDialog.info<void>(
+              context,
+              title: AppLocalizations.of(context).mineAboutTitle,
+              message: msg,
+              okLabel: AppLocalizations.of(context).mineAboutOpenGitHub,
+              onOk: () async {
+                final url = Uri.parse('https://github.com/TNT-Likely/BeeCount');
+                await _tryOpenUrl(url);
+              },
+            );
           },
         ),
-        // 检查更新功能 (已隐藏)
-        // if (!Platform.isIOS) ...[
-        //   AppDivider.thin(),
-        //   Consumer(builder: (context, ref2, child) {
-        //     final isLoading = ref2.watch(checkUpdateLoadingProvider);
-        //     final downloadProgress = ref2.watch(updateProgressProvider);
-        //
-        //     // 确定显示状态
-        //     bool showProgress = false;
-        //     String title = AppLocalizations.of(context).mineCheckUpdate;
-        //     String? subtitle;
-        //     IconData icon = Icons.system_update_alt_outlined;
-        //     Widget? trailing;
-        //
-        //     if (isLoading) {
-        //       title = AppLocalizations.of(context).mineCheckUpdateDetecting;
-        //       subtitle =
-        //           AppLocalizations.of(context).mineCheckUpdateSubtitleDetecting;
-        //       icon = Icons.hourglass_empty;
-        //       trailing = const SizedBox(
-        //           width: 20,
-        //           height: 20,
-        //           child: CircularProgressIndicator(strokeWidth: 2));
-        //     } else if (downloadProgress.isActive) {
-        //       showProgress = true;
-        //       title = AppLocalizations.of(context).mineUpdateDownloadTitle;
-        //       icon = Icons.download_outlined;
-        //       trailing = SizedBox(
-        //           width: 20,
-        //           height: 20,
-        //           child: CircularProgressIndicator(
-        //             strokeWidth: 2,
-        //             value: downloadProgress.progress,
-        //           ));
-        //     }
-        //
-        //     return AppListTile(
-        //       leading: icon,
-        //       title: title,
-        //       subtitle: showProgress ? downloadProgress.status : subtitle,
-        //       trailing: trailing,
-        //       onTap: (isLoading || showProgress)
-        //           ? null
-        //           : () async {
-        //               await UpdateService.checkUpdateWithUI(
-        //                 context,
-        //                 setLoading: (loading) => ref2
-        //                     .read(checkUpdateLoadingProvider.notifier)
-        //                     .state = loading,
-        //                 setProgress: (progress, status) {
-        //                   if (status.isEmpty) {
-        //                     ref2.read(updateProgressProvider.notifier).state =
-        //                         UpdateProgress.idle();
-        //                   } else {
-        //                     ref2.read(updateProgressProvider.notifier).state =
-        //                         UpdateProgress.active(progress, status);
-        //                   }
-        //                 },
-        //               );
-        //             },
-        //     );
-        //   }),
-        // ],
+        // iOS 平台隐藏检查更新功能（使用 App Store/TestFlight 分发）
+        if (!Platform.isIOS) ...[
+          AppDivider.thin(),
+          Consumer(builder: (context, ref2, child) {
+            final isLoading = ref2.watch(checkUpdateLoadingProvider);
+            final downloadProgress = ref2.watch(updateProgressProvider);
+
+            // 确定显示状态
+            bool showProgress = false;
+            String title = AppLocalizations.of(context).mineCheckUpdate;
+            String? subtitle;
+            IconData icon = Icons.system_update_alt_outlined;
+            Widget? trailing;
+
+            if (isLoading) {
+              title = AppLocalizations.of(context).mineCheckUpdateDetecting;
+              subtitle =
+                  AppLocalizations.of(context).mineCheckUpdateSubtitleDetecting;
+              icon = Icons.hourglass_empty;
+              trailing = const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2));
+            } else if (downloadProgress.isActive) {
+              showProgress = true;
+              title = AppLocalizations.of(context).mineUpdateDownloadTitle;
+              icon = Icons.download_outlined;
+              trailing = SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    value: downloadProgress.progress,
+                  ));
+            }
+
+            return AppListTile(
+              leading: icon,
+              title: title,
+              subtitle: showProgress ? downloadProgress.status : subtitle,
+              trailing: trailing,
+              onTap: (isLoading || showProgress)
+                  ? null
+                  : () async {
+                      await UpdateService.checkUpdateWithUI(
+                        context,
+                        setLoading: (loading) => ref2
+                            .read(checkUpdateLoadingProvider.notifier)
+                            .state = loading,
+                        setProgress: (progress, status) {
+                          if (status.isEmpty) {
+                            ref2.read(updateProgressProvider.notifier).state =
+                                UpdateProgress.idle();
+                          } else {
+                            ref2.read(updateProgressProvider.notifier).state =
+                                UpdateProgress.active(progress, status);
+                          }
+                        },
+                      );
+                    },
+            );
+          }),
+        ],
         AppDivider.thin(),
         AppListTile(
           leading: Icons.feedback_outlined,
@@ -974,123 +822,47 @@ class MinePage extends ConsumerWidget {
       ]),
     );
   }
-
-  Widget _buildDebugSection(BuildContext context, WidgetRef ref) {
-    return SectionCard(
-      margin: EdgeInsets.fromLTRB(
-          12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
-      child: Column(children: [
-        AppListTile(
-          leading: Icons.refresh,
-          title: AppLocalizations.of(context).mineDebugRefreshStats,
-          subtitle: AppLocalizations.of(context).mineDebugRefreshStatsSubtitle,
-          onTap: () {
-            ref.read(statsRefreshProvider.notifier).state++;
-          },
-        ),
-        AppDivider.thin(),
-        AppListTile(
-          leading: Icons.sync,
-          title: AppLocalizations.of(context).mineDebugRefreshSync,
-          subtitle: AppLocalizations.of(context).mineDebugRefreshSyncSubtitle,
-          onTap: () {
-            ref.read(syncStatusRefreshProvider.notifier).state++;
-          },
-        ),
-      ]),
-    );
-  }
-
-  Widget _buildSupportSection(BuildContext context, WidgetRef ref) {
-    return SectionCard(
-      margin: EdgeInsets.fromLTRB(
-          12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
-      child: AppListTile(
-        leading: Icons.favorite_outline,
-        title: AppLocalizations.of(context).supportProjectTitle,
-        subtitle: AppLocalizations.of(context).supportProjectWhyTitle,
-        onTap: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SupportProjectPage()),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildLanguageSection(BuildContext context, WidgetRef ref) {
-    final currentLanguage = ref.watch(languageProvider);
-    final l10n = AppLocalizations.of(context);
-
-    // 获取当前语言显示名称
-    String currentLanguageDisplay;
-    if (currentLanguage == null) {
-      currentLanguageDisplay = l10n.languageSystemDefault;
-    } else {
-      switch (currentLanguage.languageCode) {
-        case 'zh':
-          currentLanguageDisplay = l10n.languageChinese;
-          break;
-        case 'en':
-          currentLanguageDisplay = l10n.languageEnglish;
-          break;
-        default:
-          currentLanguageDisplay = currentLanguage.languageCode;
-      }
-    }
-
-    return SectionCard(
-      margin: EdgeInsets.fromLTRB(
-          12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
-      child: AppListTile(
-        leading: Icons.language_outlined,
-        title: l10n.mineLanguageSettings,
-        subtitle: l10n.mineLanguageSettingsSubtitle,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              currentLanguageDisplay,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey[400],
-              size: 20,
-            ),
-          ],
-        ),
-        onTap: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const LanguageSettingsPage()),
-          );
-        },
-      ),
-    );
-  }
 }
 
 class _StatCell extends ConsumerWidget {
   final String label;
-  final String value;
+  final dynamic value; // 可以是 String 或 double
   final TextStyle? labelStyle;
   final TextStyle? numStyle;
-  const _StatCell(
-      {required this.label,
-      required this.value,
-      this.labelStyle,
-      this.numStyle});
+  final bool isAmount; // 是否为金额类型
+  final String? currencyCode; // 币种代码
+
+  const _StatCell({
+    required this.label,
+    required this.value,
+    this.labelStyle,
+    this.numStyle,
+    this.isAmount = false,
+    this.currencyCode,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Widget valueWidget;
+    if (isAmount && value is double) {
+      // 金额类型,使用 AmountText
+      valueWidget = AmountText(
+        value: value as double,
+        signed: false,
+        showCurrency: true,
+        useCompactFormat: true,
+        currencyCode: currencyCode,
+        style: numStyle,
+      );
+    } else {
+      // 其他类型,直接显示字符串
+      valueWidget = Text(value.toString(), style: numStyle);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: numStyle),
+        valueWidget,
         SizedBox(height: 4.0.scaled(context, ref)), // 数字与标签间距增大
         Text(label, style: labelStyle),
       ],
@@ -1125,6 +897,201 @@ class _ImportSuccessTile extends StatelessWidget {
       },
     );
   }
+}
+
+// 数据管理分组
+Widget _buildDataManagementSection(BuildContext context, WidgetRef ref) {
+  return SectionCard(
+    margin: EdgeInsets.fromLTRB(
+        12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
+    child: Column(
+      children: [
+        // 导入数据
+        Consumer(builder: (ctx, r, _) {
+          final p = r.watch(importProgressProvider);
+          if (!p.running && p.total == 0) {
+            return AppListTile(
+              leading: Icons.file_upload_outlined,
+              title: AppLocalizations.of(context).mineImport,
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ImportPage()),
+                );
+              },
+            );
+          }
+          if (p.running) {
+            final percent =
+                p.total == 0 ? null : (p.done / p.total).clamp(0.0, 1.0);
+            return AppListTile(
+              leading: Icons.upload_outlined,
+              title: AppLocalizations.of(context).mineImportProgressTitle,
+              subtitle: AppLocalizations.of(context)
+                  .mineImportProgressSubtitle(p.done, p.fail, p.ok, p.total),
+              trailing: SizedBox(
+                  width: 72, child: LinearProgressIndicator(value: percent)),
+              onTap: null,
+            );
+          }
+          final allOk = (p.done == p.total) && (p.fail == 0);
+          if (allOk) return const _ImportSuccessTile();
+          return AppListTile(
+            leading: Icons.info_outline,
+            title: AppLocalizations.of(context).mineImportCompleteTitle,
+            subtitle:
+                '${AppLocalizations.of(context).commonSuccess} ${p.ok}，${AppLocalizations.of(context).commonFailed} ${p.fail}',
+            onTap: null,
+          );
+        }),
+        AppDivider.thin(),
+        // 导出数据
+        AppListTile(
+          leading: Icons.file_download_outlined,
+          title: AppLocalizations.of(context).mineExport,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ExportPage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 分类管理
+        AppListTile(
+          leading: Icons.category_outlined,
+          title: AppLocalizations.of(context).mineCategoryManagement,
+          subtitle: AppLocalizations.of(context).mineCategoryManagementSubtitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CategoryManagePage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 分类迁移
+        AppListTile(
+          leading: Icons.swap_horiz,
+          title: AppLocalizations.of(context).mineCategoryMigration,
+          subtitle: AppLocalizations.of(context).mineCategoryMigrationSubtitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CategoryMigrationPage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 账户管理
+        AppListTile(
+          leading: Icons.account_balance_wallet_outlined,
+          title: AppLocalizations.of(context).accountsTitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AccountsPage()),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+// 自动化功能分组
+Widget _buildAutomationSection(BuildContext context, WidgetRef ref) {
+  return SectionCard(
+    margin: EdgeInsets.fromLTRB(
+        12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
+    child: Column(
+      children: [
+        // 周期记账
+        AppListTile(
+          leading: Icons.repeat,
+          title: AppLocalizations.of(context).mineRecurringTransactions,
+          subtitle: AppLocalizations.of(context).mineRecurringTransactionsSubtitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const RecurringTransactionPage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 记账提醒
+        AppListTile(
+          leading: Icons.notifications_outlined,
+          title: AppLocalizations.of(context).mineReminderSettings,
+          subtitle: AppLocalizations.of(context).mineReminderSettingsSubtitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ReminderSettingsPage()),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+// 外观与显示分组
+Widget _buildAppearanceSection(BuildContext context, WidgetRef ref) {
+  final currentLanguage = ref.watch(languageProvider);
+  final l10n = AppLocalizations.of(context);
+
+  String languageDisplay;
+  if (currentLanguage == null) {
+    languageDisplay = l10n.languageSystemDefault;
+  } else {
+    switch (currentLanguage.languageCode) {
+      case 'zh':
+        languageDisplay = l10n.languageChinese;
+        break;
+      case 'en':
+        languageDisplay = l10n.languageEnglish;
+        break;
+      default:
+        languageDisplay = currentLanguage.languageCode;
+    }
+  }
+
+  return SectionCard(
+    margin: EdgeInsets.fromLTRB(
+        12.0.scaled(context, ref), 0, 12.0.scaled(context, ref), 0),
+    child: Column(
+      children: [
+        // 个性化
+        AppListTile(
+          leading: Icons.brush_outlined,
+          title: AppLocalizations.of(context).minePersonalize,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PersonalizePage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 显示缩放
+        AppListTile(
+          leading: Icons.zoom_out_map_outlined,
+          title: AppLocalizations.of(context).mineDisplayScale,
+          subtitle: AppLocalizations.of(context).mineDisplayScaleSubtitle,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const FontSettingsPage()),
+            );
+          },
+        ),
+        AppDivider.thin(),
+        // 语言设置
+        AppListTile(
+          leading: Icons.language_outlined,
+          title: l10n.mineLanguageSettings,
+          subtitle: languageDisplay,
+          onTap: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const LanguageSettingsPage()),
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 // -------- 工具方法：关于与更新 --------

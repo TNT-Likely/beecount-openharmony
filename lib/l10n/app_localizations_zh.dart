@@ -397,7 +397,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get categoryDefault => '默认分类';
 
   @override
-  String get categoryCustomTag => '自定义';
+  String get categoryCustomTag => 'Custom';
 
   @override
   String get categoryReorderTip => '长按分类可拖拽调整顺序';
@@ -712,7 +712,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineFirstFullUpload => '首次全量上传';
 
   @override
-  String get mineFirstFullUploadSubtitle => '将所有本地账本上传到当前 Supabase';
+  String get mineFirstFullUploadSubtitle => '将所有本地账本上传到云端';
 
   @override
   String get mineFirstFullUploadComplete => '完成';
@@ -794,6 +794,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineUploadNeedLogin => '需登录';
 
   @override
+  String get mineUploadNeedCloudService => '仅限云服务模式可用';
+
+  @override
   String get mineUploadInProgress => '正在上传中…';
 
   @override
@@ -810,6 +813,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineDownloadTitle => '下载';
+
+  @override
+  String get mineDownloadNeedCloudService => '仅限云服务模式可用';
 
   @override
   String get mineDownloadComplete => '完成';
@@ -848,6 +854,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineAutoSyncNeedLogin => '需登录后可开启';
+
+  @override
+  String get mineAutoSyncNeedCloudService => '仅限云服务模式可用';
 
   @override
   String get mineImportProgressTitle => '后台导入中…';
@@ -928,16 +937,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineFeedbackSubtitle => '提交问题或建议';
 
   @override
-  String get mineRefreshStats => '刷新统计信息（临时）';
+  String get mineRefreshStats => 'Refresh Stats (Debug)';
 
   @override
-  String get mineRefreshStatsSubtitle => '触发全局统计 Provider 重新计算';
+  String get mineRefreshStatsSubtitle => 'Trigger global stats provider recalculation';
 
   @override
-  String get mineRefreshSync => '刷新同步状态（临时）';
+  String get mineRefreshSync => 'Refresh Sync Status (Debug)';
 
   @override
-  String get mineRefreshSyncSubtitle => '触发同步状态 Provider 重新获取';
+  String get mineRefreshSyncSubtitle => 'Trigger sync status provider refresh';
 
   @override
   String get categoryEditTitle => '编辑分类';
@@ -1557,7 +1566,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reminderDescription => '提示：开启记账提醒后，系统会在每天指定时间发送通知提醒您记录收支。';
 
   @override
-  String get reminderIOSInstructions => '🍎 iOS通知设置：\n• 设置 > 通知 > 蜜蜂记账\n• 开启\"允许通知\"\n• 设置通知样式：横幅或提醒\n• 开启声音和震动\n\n⚠️ iOS模拟器限制：\n• 模拟器通知功能有限\n• 建议使用真机测试\n• 查看Xcode控制台了解通知状态\n\n如果在模拟器中测试，请观察：\n• Xcode控制台日志输出\n• Flutter Debug Console信息\n• 应用内弹窗确认通知发送';
+  String get reminderIOSInstructions => '🍎 iOS通知设置：\n• 设置 > 通知 > 蜜蜂记账\n• 开启\"允许通知\"\n• 设置通知样式：横幅或提醒\n• 开启声音和震动\n\n⚠️ 重要提示：\n• iOS本地通知依赖应用进程\n• 请勿在任务管理器中划掉应用\n• 应用在后台或前台时通知正常\n• 完全关闭应用会导致通知失效\n\n💡 使用建议：\n• 日常使用后直接按Home键退出\n• iOS会自动管理后台应用\n• 保持应用在后台即可收到提醒';
 
   @override
   String get reminderAndroidInstructions => '如果通知无法正常工作，请检查：\n• 已允许应用发送通知\n• 关闭应用的电池优化/省电模式\n• 允许应用在后台运行和自启动\n• Android 12+需要精确闹钟权限\n\n📱 小米手机特殊设置：\n• 设置 > 应用管理 > 蜜蜂记账 > 通知管理\n• 点击\"记账提醒\"渠道\n• 设置重要性为\"紧急\"或\"高\"\n• 开启\"横幅通知\"、\"声音\"、\"震动\"\n• 安全中心 > 应用管理 > 权限 > 自启动\n\n🔒 锁定后台方法：\n• 最近任务中找到蜜蜂记账\n• 向下拉动应用卡片显示锁定图标\n• 点击锁定图标防止被清理';
@@ -2562,60 +2571,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get currencyBYN => '白俄罗斯卢布';
-
-  @override
-  String get supportProjectTitle => '支持项目';
-
-  @override
-  String get supportProjectWhyTitle => '为什么需要您的支持?';
-
-  @override
-  String get supportProjectWhyDescription => '蜜蜂记账是完全免费开源的项目,没有任何广告和付费功能。项目的持续运营需要每年续费 Apple 开发者账号（\$99/年）以保持 iOS 版本可用。您的支持将帮助项目持续发展,让更多用户受益。';
-
-  @override
-  String get supportProjectAchievementTitle => '初期目标已完成';
-
-  @override
-  String get supportProjectAchievementDescription => '感谢所有支持者!首期 iOS TestFlight 公测目标已达成,应用现已上线。';
-
-  @override
-  String get supportProjectOngoingTitle => '持续运营成本';
-
-  @override
-  String supportProjectCurrentAmount(String amount) {
-    return '已筹集: $amount';
-  }
-
-  @override
-  String supportProjectTargetAmount(String amount) {
-    return '目标: $amount';
-  }
-
-  @override
-  String supportProjectProgress(String progress) {
-    return '进度: $progress';
-  }
-
-  @override
-  String get supportProjectUsageTitle => '资金用途';
-
-  @override
-  String get supportProjectUsage1 => '每年续费 Apple 开发者账号（\$99/年）';
-
-  @override
-  String get supportProjectUsage2 => '持续维护和开发新功能';
-
-  @override
-  String get supportProjectUsage3 => '支持鸿蒙版本等跨平台适配';
-
-  @override
-  String get supportProjectViewDonationMethods => '查看捐赠方式';
-
-  @override
-  String get supportProjectNote => '💡 捐赠完全自愿，项目永久免费开源';
-
-  @override
-  String get supportProjectVoluntaryNote => '您的每一份支持都将用于项目的长期维护，让蜜蜂记账持续为用户服务。';
 
   @override
   String get webdavConfiguredTitle => 'WebDAV 云服务已配置';
@@ -3634,7 +3589,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get mineFirstFullUpload => '首次全量上傳';
 
   @override
-  String get mineFirstFullUploadSubtitle => '將所有本地帳本上傳到當前 Supabase';
+  String get mineFirstFullUploadSubtitle => '將所有本地帳本上傳到雲端';
 
   @override
   String get mineFirstFullUploadComplete => '完成';
@@ -3716,6 +3671,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get mineUploadNeedLogin => '需登入';
 
   @override
+  String get mineUploadNeedCloudService => '僅限雲端服務模式可用';
+
+  @override
   String get mineUploadInProgress => '正在上傳中…';
 
   @override
@@ -3732,6 +3690,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get mineDownloadTitle => '下載';
+
+  @override
+  String get mineDownloadNeedCloudService => '僅限雲端服務模式可用';
 
   @override
   String get mineDownloadComplete => '完成';
@@ -3770,6 +3731,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get mineAutoSyncNeedLogin => '需登入後可開啟';
+
+  @override
+  String get mineAutoSyncNeedCloudService => '僅限雲端服務模式可用';
 
   @override
   String get mineImportProgressTitle => '後台匯入中…';
@@ -4479,7 +4443,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get reminderDescription => '提示：開啟記帳提醒後，系統會在每天指定時間發送通知提醒您記錄收支。';
 
   @override
-  String get reminderIOSInstructions => '🍎 iOS通知設定：\n• 設定 > 通知 > 蜜蜂記帳\n• 開啟\"允許通知\"\n• 設定通知樣式：橫幅或提醒\n• 開啟聲音和震動\n\n⚠️ iOS模擬器限制：\n• 模擬器通知功能有限\n• 建議使用真機測試\n• 檢視Xcode控制台了解通知狀態\n\n如果在模擬器中測試，請觀察：\n• Xcode控制台日誌輸出\n• Flutter Debug Console資訊\n• 應用程式內彈窗確認通知發送';
+  String get reminderIOSInstructions => '🍎 iOS通知設定：\n• 設定 > 通知 > 蜜蜂記帳\n• 開啟\"允許通知\"\n• 設定通知樣式：橫幅或提醒\n• 開啟聲音和震動\n\n⚠️ 重要提示：\n• iOS本地通知依賴應用程序進程\n• 請勿在任務管理器中划掉應用\n• 應用在後台或前台時通知正常\n• 完全關閉應用會導致通知失效\n\n💡 使用建議：\n• 日常使用後直接按Home鍵退出\n• iOS會自動管理後台應用\n• 保持應用在後台即可收到提醒';
 
   @override
   String get reminderAndroidInstructions => '如果通知無法正常工作，請檢查：\n• 已允許應用程式發送通知\n• 關閉應用程式的電池最佳化/省電模式\n• 允許應用程式在背景執行和自啟動\n• Android 12+需要精確鬧鐘權限\n\n📱 小米手機特殊設定：\n• 設定 > 應用程式管理 > 蜜蜂記帳 > 通知管理\n• 點擊\"記帳提醒\"頻道\n• 設定重要性為\"緊急\"或\"高\"\n• 開啟\"橫幅通知\"、\"聲音\"、\"震動\"\n• 安全中心 > 應用程式管理 > 權限 > 自啟動\n\n🔒 鎖定背景方法：\n• 最近任務中找到蜜蜂記帳\n• 向下拉動應用程式卡片顯示鎖定圖示\n• 點擊鎖定圖示防止被清理';
@@ -5484,48 +5448,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get currencyBYN => '白俄羅斯盧布';
-
-  @override
-  String get supportProjectTitle => '支持項目';
-
-  @override
-  String get supportProjectWhyTitle => '為什麼需要您的支持?';
-
-  @override
-  String get supportProjectWhyDescription => '蜜蜂記帳是完全免費開源的專案,沒有任何廣告和付費功能。但要讓 iOS 用戶能夠正常使用,需要申請 Apple 開發者帳號(\$99/年)來簽名應用程式。';
-
-  @override
-  String supportProjectCurrentAmount(String amount) {
-    return '已籌集: $amount';
-  }
-
-  @override
-  String supportProjectTargetAmount(String amount) {
-    return '目標: $amount';
-  }
-
-  @override
-  String supportProjectProgress(String progress) {
-    return '進度: $progress';
-  }
-
-  @override
-  String get supportProjectUsageTitle => '捐贈用途';
-
-  @override
-  String get supportProjectUsage1 => '申請 Apple 開發者帳號(\$99/年)';
-
-  @override
-  String get supportProjectUsage2 => '通過 TestFlight 分發 iOS 版本';
-
-  @override
-  String get supportProjectUsage3 => '維護項目的持續開發';
-
-  @override
-  String get supportProjectViewDonationMethods => '查看捐贈方式';
-
-  @override
-  String get supportProjectNote => '點擊按鈕將跳轉到 GitHub 查看詳細捐贈方式';
 
   @override
   String get webdavConfiguredTitle => 'WebDAV 雲服務已設定';

@@ -125,32 +125,32 @@ class _CloudServicePageState extends ConsumerState<CloudServicePage> {
 
                     const SizedBox(height: 12),
 
-                    // 2. 自定义 Supabase Card (已隐藏)
-                    // supabaseAsync.when(
-                    //   loading: () => const SizedBox(height: 100, child: Center(child: CircularProgressIndicator())),
-                    //   error: (e, _) => const SizedBox.shrink(),
-                    //   data: (supabaseCfg) => _buildServiceCard(
-                    //     context: context,
-                    //     icon: Icons.cloud,
-                    //     iconColor: Colors.blue,
-                    //     title: AppLocalizations.of(context).cloudCustomSupabaseTitle,
-                    //     subtitle: supabaseCfg?.valid == true
-                    //         ? supabaseCfg!.obfuscatedUrl()
-                    //         : AppLocalizations.of(context).cloudCustomSupabaseSubtitle,
-                    //     isSelected: active.type == CloudBackendType.supabase,
-                    //     isConfigured: supabaseCfg?.valid == true,
-                    //     onTap: () => supabaseCfg?.valid == true
-                    //         ? _switchService(CloudBackendType.supabase)
-                    //         : _configureService(CloudBackendType.supabase),
-                    //     onConfigure: supabaseCfg?.valid == true
-                    //         ? () => _configureService(CloudBackendType.supabase)
-                    //         : null,
-                    //     showGuide: true,
-                    //     guideUrl: _kSupabaseGuideUrl,
-                    //   ),
-                    // ),
+                    // 2. 自定义 Supabase Card
+                    supabaseAsync.when(
+                      loading: () => const SizedBox(height: 100, child: Center(child: CircularProgressIndicator())),
+                      error: (e, _) => const SizedBox.shrink(),
+                      data: (supabaseCfg) => _buildServiceCard(
+                        context: context,
+                        icon: Icons.cloud,
+                        iconColor: Colors.blue,
+                        title: AppLocalizations.of(context).cloudCustomSupabaseTitle,
+                        subtitle: supabaseCfg?.valid == true
+                            ? supabaseCfg!.obfuscatedUrl()
+                            : AppLocalizations.of(context).cloudCustomSupabaseSubtitle,
+                        isSelected: active.type == CloudBackendType.supabase,
+                        isConfigured: supabaseCfg?.valid == true,
+                        onTap: () => supabaseCfg?.valid == true
+                            ? _switchService(CloudBackendType.supabase)
+                            : _configureService(CloudBackendType.supabase),
+                        onConfigure: supabaseCfg?.valid == true
+                            ? () => _configureService(CloudBackendType.supabase)
+                            : null,
+                        showGuide: true,
+                        guideUrl: _kSupabaseGuideUrl,
+                      ),
+                    ),
 
-                    // const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
                     // 3. 自定义 WebDAV Card
                     webdavAsync.when(
@@ -499,6 +499,8 @@ class _CloudServicePageState extends ConsumerState<CloudServicePage> {
       try {
         await ref.read(cloudServiceStoreProvider).saveOnly(cfg);
         ref.invalidate(supabaseConfigProvider);
+        // 刷新激活配置，确保同步服务使用最新配置
+        ref.invalidate(activeCloudConfigProvider);
         if (mounted) showToast(context, AppLocalizations.of(context).cloudConfigSaved);
       } catch (e) {
         if (mounted) {
@@ -555,6 +557,8 @@ class _CloudServicePageState extends ConsumerState<CloudServicePage> {
       try {
         await ref.read(cloudServiceStoreProvider).saveOnly(cfg);
         ref.invalidate(webdavConfigProvider);
+        // 刷新激活配置，确保同步服务使用最新配置
+        ref.invalidate(activeCloudConfigProvider);
         if (mounted) showToast(context, AppLocalizations.of(context).cloudConfigSaved);
       } catch (e) {
         if (mounted) {

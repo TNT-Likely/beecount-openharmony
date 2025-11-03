@@ -309,7 +309,7 @@
   "mineCloudServiceCustom": "カスタムSupabase",
   "mineCloudServiceWebDAV": "カスタムクラウドサービス (WebDAV)",
   "mineFirstFullUpload": "初回フルアップロード",
-  "mineFirstFullUploadSubtitle": "すべてのローカル家計簿を現在のSupabaseにアップロード",
+  "mineFirstFullUploadSubtitle": "すべてのローカル家計簿をクラウドにアップロード",
   "mineFirstFullUploadComplete": "完了",
   "mineFirstFullUploadMessage": "現在の家計簿がアップロードされました。他の家計簿に切り替えてアップロードしてください。",
   "mineFirstFullUploadFailed": "失敗",
@@ -331,12 +331,14 @@
   "mineSyncMessage": "メッセージ：{message}",
   "mineUploadTitle": "アップロード",
   "mineUploadNeedLogin": "ログインが必要です",
+  "mineUploadNeedCloudService": "クラウドサービスモードでのみ利用可能",
   "mineUploadInProgress": "アップロード中...",
   "mineUploadRefreshing": "更新中...",
   "mineUploadSynced": "同期済み",
   "mineUploadSuccess": "アップロード完了",
   "mineUploadSuccessMessage": "現在の家計簿がクラウドに同期されました",
   "mineDownloadTitle": "ダウンロード",
+  "mineDownloadNeedCloudService": "クラウドサービスモードでのみ利用可能",
   "mineDownloadComplete": "完了",
   "mineDownloadResult": "新規インポート：{inserted}\\n既存スキップ：{skipped}\\n重複クリーンアップ：{deleted}",
   "mineLoginTitle": "ログイン / 登録",
@@ -349,6 +351,7 @@
   "mineAutoSyncTitle": "家計簿の自動同期",
   "mineAutoSyncSubtitle": "記録後に自動でクラウドにアップロード",
   "mineAutoSyncNeedLogin": "有効にするにはログインが必要です",
+  "mineAutoSyncNeedCloudService": "クラウドサービスモードでのみ利用可能",
   "mineImportProgressTitle": "バックグラウンドでインポート中...",
   "mineImportProgressSubtitle": "進行状況：{done}/{total}、成功{ok}件、失敗{fail}件",
   "mineImportCompleteTitle": "インポート完了",
@@ -1154,40 +1157,6 @@
   "currencyRUB": "ロシアルーブル",
   "currencyBYN": "ベラルーシルーブル",
 
-  "supportProjectTitle": "プロジェクトを支援",
-  "supportProjectWhyTitle": "なぜご支援が必要ですか?",
-  "supportProjectWhyDescription": "BeeCountは完全無料のオープンソースプロジェクトで、広告や有料機能はありません。ただし、iOSユーザーが利用できるようにするには、アプリに署名するためのApple Developer Account($99/年)が必要です。",
-  "supportProjectGoalTitle": "資金調達目標",
-  "supportProjectCurrentAmount": "集まった金額: {amount}",
-  "@supportProjectCurrentAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectTargetAmount": "目標: {amount}",
-  "@supportProjectTargetAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectProgress": "進捗: {progress}",
-  "@supportProjectProgress": {
-    "placeholders": {
-      "progress": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectUsageTitle": "寄付金の使い道",
-  "supportProjectUsage1": "Apple Developer Account年会費($99/年)",
-  "supportProjectUsage2": "TestFlight経由でiOS版を配布",
-  "supportProjectUsage3": "プロジェクトの継続的な開発とメンテナンス",
-  "supportProjectViewDonationMethods": "寄付方法を見る",
-  "supportProjectNote": "ボタンをクリックするとGitHubにリダイレクトされ、詳細な寄付方法が表示されます",
 
   "webdavConfiguredTitle": "WebDAV クラウドサービスが設定されました",
   "webdavConfiguredMessage": "WebDAV クラウドサービスは設定時に提供された資格情報を使用するため、追加のログインは不要です。",

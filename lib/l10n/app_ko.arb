@@ -309,7 +309,7 @@
   "mineCloudServiceCustom": "사용자 정의 Supabase",
   "mineCloudServiceWebDAV": "사용자 정의 클라우드 서비스 (WebDAV)",
   "mineFirstFullUpload": "첫 번째 전체 업로드",
-  "mineFirstFullUploadSubtitle": "모든 로컬 가계부를 현재 Supabase에 업로드",
+  "mineFirstFullUploadSubtitle": "모든 로컬 가계부를 클라우드에 업로드",
   "mineFirstFullUploadComplete": "완료",
   "mineFirstFullUploadMessage": "현재 가계부가 업로드되었습니다. 다른 가계부로 전환하여 업로드하세요.",
   "mineFirstFullUploadFailed": "실패",
@@ -331,12 +331,14 @@
   "mineSyncMessage": "메시지: {message}",
   "mineUploadTitle": "업로드",
   "mineUploadNeedLogin": "로그인이 필요합니다",
+  "mineUploadNeedCloudService": "클라우드 서비스 모드에서만 사용 가능",
   "mineUploadInProgress": "업로드 중...",
   "mineUploadRefreshing": "새로고침 중...",
   "mineUploadSynced": "동기화됨",
   "mineUploadSuccess": "업로드 완료",
   "mineUploadSuccessMessage": "현재 가계부가 클라우드에 동기화되었습니다",
   "mineDownloadTitle": "다운로드",
+  "mineDownloadNeedCloudService": "클라우드 서비스 모드에서만 사용 가능",
   "mineDownloadComplete": "완료",
   "mineDownloadResult": "새로운 가져오기: {inserted}\\n기존 건너뛰기: {skipped}\\n중복 정리: {deleted}",
   "mineLoginTitle": "로그인 / 등록",
@@ -349,6 +351,7 @@
   "mineAutoSyncTitle": "가계부 자동 동기화",
   "mineAutoSyncSubtitle": "기록 후 자동으로 클라우드에 업로드",
   "mineAutoSyncNeedLogin": "활성화하려면 로그인이 필요합니다",
+  "mineAutoSyncNeedCloudService": "클라우드 서비스 모드에서만 사용 가능",
   "mineImportProgressTitle": "백그라운드에서 가져오는 중...",
   "mineImportProgressSubtitle": "진행 상황: {done}/{total}, 성공 {ok}개, 실패 {fail}개",
   "mineImportCompleteTitle": "가져오기 완료",
@@ -1154,40 +1157,6 @@
   "currencyRUB": "러시아 루블",
   "currencyBYN": "벨라루스 루블",
 
-  "supportProjectTitle": "프로젝트 지원",
-  "supportProjectWhyTitle": "왜 귀하의 지원이 필요한가요?",
-  "supportProjectWhyDescription": "BeeCount는 광고나 유료 기능이 없는 완전 무료 오픈소스 프로젝트입니다. 하지만 iOS 사용자가 사용할 수 있도록 하려면 앱에 서명하기 위한 Apple Developer Account($99/년)가 필요합니다.",
-  "supportProjectGoalTitle": "모금 목표",
-  "supportProjectCurrentAmount": "모금액: {amount}",
-  "@supportProjectCurrentAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectTargetAmount": "목표: {amount}",
-  "@supportProjectTargetAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectProgress": "진행률: {progress}",
-  "@supportProjectProgress": {
-    "placeholders": {
-      "progress": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectUsageTitle": "기부금 사용처",
-  "supportProjectUsage1": "Apple Developer Account 연회비($99/년)",
-  "supportProjectUsage2": "TestFlight를 통한 iOS 버전 배포",
-  "supportProjectUsage3": "프로젝트의 지속적인 개발 및 유지보수",
-  "supportProjectViewDonationMethods": "기부 방법 보기",
-  "supportProjectNote": "버튼을 클릭하면 GitHub로 리디렉션되어 자세한 기부 방법을 확인할 수 있습니다",
 
   "webdavConfiguredTitle": "WebDAV 클라우드 서비스 설정 완료",
   "webdavConfiguredMessage": "WebDAV 클라우드 서비스는 설정 시 제공된 자격 증명을 사용하므로 추가 로그인이 필요하지 않습니다.",

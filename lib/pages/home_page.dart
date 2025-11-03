@@ -280,7 +280,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         height: 36,
                         color: BeeColors.divider,
                       ),
-                      Expanded(child: _HeaderCenterSummary(hide: hide)),
+                      const Expanded(child: _HeaderCenterSummary()),
                     ],
                   ),
                 ],
@@ -319,8 +319,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 }
 
 class _HeaderCenterSummary extends ConsumerWidget {
-  final bool hide;
-  const _HeaderCenterSummary({required this.hide});
+  const _HeaderCenterSummary();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -340,11 +339,10 @@ class _HeaderCenterSummary extends ConsumerWidget {
             Text(title,
                 textAlign: TextAlign.left, style: AppTextTokens.label(context)),
             const SizedBox(height: 2),
-            Text(
-              hide ? '****' : formatMoneyCompact(value, maxDecimals: 2),
-              textAlign: TextAlign.left,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            AmountText(
+              value: value,
+              signed: false,
+              decimals: 2,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: BeeColors.primaryText,
                         fontSize: 20,

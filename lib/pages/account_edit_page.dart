@@ -5,6 +5,7 @@ import '../data/repository.dart';
 import '../widgets/ui/ui.dart';
 import '../data/db.dart' as db;
 import '../l10n/app_localizations.dart';
+import '../utils/sync_helpers.dart';
 
 class AccountEditPage extends ConsumerStatefulWidget {
   final db.Account? account; // null表示新建
@@ -309,7 +310,9 @@ class _AccountEditPageState extends ConsumerState<AccountEditPage> {
         );
       }
 
+      // 触发账本同步(后台异步,不阻塞页面关闭)
       if (mounted) {
+        handleLocalChange(ref, ledgerId: widget.ledgerId, background: true);
         Navigator.of(context).pop(true);
       }
     } catch (e) {
@@ -385,7 +388,9 @@ class _AccountEditPageState extends ConsumerState<AccountEditPage> {
     try {
       await repo.deleteAccount(widget.account!.id);
 
+      // 触发账本同步(后台异步,不阻塞页面关闭)
       if (mounted) {
+        handleLocalChange(ref, ledgerId: widget.ledgerId, background: true);
         Navigator.of(context).pop(true);
       }
     } catch (e) {

@@ -1447,7 +1447,7 @@ abstract class AppLocalizations {
   /// No description provided for @mineFirstFullUploadSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Upload all local ledgers to current Supabase'**
+  /// **'Upload all local ledgers to cloud'**
   String get mineFirstFullUploadSubtitle;
 
   /// No description provided for @mineFirstFullUploadComplete.
@@ -1576,6 +1576,12 @@ abstract class AppLocalizations {
   /// **'Login required'**
   String get mineUploadNeedLogin;
 
+  /// No description provided for @mineUploadNeedCloudService.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in cloud service mode only'**
+  String get mineUploadNeedCloudService;
+
   /// No description provided for @mineUploadInProgress.
   ///
   /// In en, this message translates to:
@@ -1611,6 +1617,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get mineDownloadTitle;
+
+  /// No description provided for @mineDownloadNeedCloudService.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in cloud service mode only'**
+  String get mineDownloadNeedCloudService;
 
   /// No description provided for @mineDownloadComplete.
   ///
@@ -1683,6 +1695,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login required to enable'**
   String get mineAutoSyncNeedLogin;
+
+  /// No description provided for @mineAutoSyncNeedCloudService.
+  ///
+  /// In en, this message translates to:
+  /// **'Available in cloud service mode only'**
+  String get mineAutoSyncNeedCloudService;
 
   /// No description provided for @mineImportProgressTitle.
   ///
@@ -3025,7 +3043,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminderIOSInstructions.
   ///
   /// In en, this message translates to:
-  /// **'🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ iOS Simulator limitations:\n• Simulator notification features are limited\n• Recommend using real device\n• Check Xcode console for notification status\n\nIf testing in simulator, observe:\n• Xcode console log output\n• Flutter Debug Console info\n• In-app popups confirming notification sent'**
+  /// **'🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ Important Note:\n• iOS local notifications depend on app process\n• Do not force quit app from task manager\n• Notifications work when app is in background or foreground\n• Force quitting will disable notifications\n\n💡 Usage Tips:\n• Simply press Home button to exit app\n• iOS will manage background apps automatically\n• Keep app in background to receive reminders'**
   String get reminderIOSInstructions;
 
   /// No description provided for @reminderAndroidInstructions.
@@ -4911,102 +4929,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Belarusian Ruble'**
   String get currencyBYN;
-
-  /// No description provided for @supportProjectTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Support Project'**
-  String get supportProjectTitle;
-
-  /// No description provided for @supportProjectWhyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Why We Need Your Support?'**
-  String get supportProjectWhyTitle;
-
-  /// No description provided for @supportProjectWhyDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'BeeCount is a completely free and open-source project with no ads or paid features. Ongoing operations require annual renewal of Apple Developer Account (\$99/year) to keep the iOS version accessible. Your support helps the project continue to grow and benefit more users.'**
-  String get supportProjectWhyDescription;
-
-  /// No description provided for @supportProjectAchievementTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Initial Goal Achieved'**
-  String get supportProjectAchievementTitle;
-
-  /// No description provided for @supportProjectAchievementDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Thanks to all supporters! The first iOS TestFlight beta goal has been achieved, and the app is now live.'**
-  String get supportProjectAchievementDescription;
-
-  /// No description provided for @supportProjectOngoingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ongoing Operation Costs'**
-  String get supportProjectOngoingTitle;
-
-  /// No description provided for @supportProjectCurrentAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Raised: {amount}'**
-  String supportProjectCurrentAmount(String amount);
-
-  /// No description provided for @supportProjectTargetAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Goal: {amount}'**
-  String supportProjectTargetAmount(String amount);
-
-  /// No description provided for @supportProjectProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Progress: {progress}'**
-  String supportProjectProgress(String progress);
-
-  /// No description provided for @supportProjectUsageTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'How Funds Are Used'**
-  String get supportProjectUsageTitle;
-
-  /// No description provided for @supportProjectUsage1.
-  ///
-  /// In en, this message translates to:
-  /// **'Annual Apple Developer Account renewal (\$99/year)'**
-  String get supportProjectUsage1;
-
-  /// No description provided for @supportProjectUsage2.
-  ///
-  /// In en, this message translates to:
-  /// **'Continuous maintenance and new feature development'**
-  String get supportProjectUsage2;
-
-  /// No description provided for @supportProjectUsage3.
-  ///
-  /// In en, this message translates to:
-  /// **'Support for HarmonyOS and cross-platform adaptation'**
-  String get supportProjectUsage3;
-
-  /// No description provided for @supportProjectViewDonationMethods.
-  ///
-  /// In en, this message translates to:
-  /// **'View Donation Methods'**
-  String get supportProjectViewDonationMethods;
-
-  /// No description provided for @supportProjectNote.
-  ///
-  /// In en, this message translates to:
-  /// **'💡 Donations are completely voluntary, the project remains free and open-source forever'**
-  String get supportProjectNote;
-
-  /// No description provided for @supportProjectVoluntaryNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Every contribution goes toward long-term maintenance, keeping BeeCount available for all users.'**
-  String get supportProjectVoluntaryNote;
 
   /// No description provided for @webdavConfiguredTitle.
   ///

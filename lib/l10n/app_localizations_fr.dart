@@ -712,7 +712,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mineFirstFullUpload => 'First Full Upload';
 
   @override
-  String get mineFirstFullUploadSubtitle => 'Upload all local ledgers to current Supabase';
+  String get mineFirstFullUploadSubtitle => 'Upload all local ledgers to cloud';
 
   @override
   String get mineFirstFullUploadComplete => 'Complete';
@@ -794,6 +794,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mineUploadNeedLogin => 'Login required';
 
   @override
+  String get mineUploadNeedCloudService => 'Available in cloud service mode only';
+
+  @override
   String get mineUploadInProgress => 'Uploading...';
 
   @override
@@ -810,6 +813,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mineDownloadTitle => 'Download';
+
+  @override
+  String get mineDownloadNeedCloudService => 'Available in cloud service mode only';
 
   @override
   String get mineDownloadComplete => 'Complete';
@@ -848,6 +854,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get mineAutoSyncNeedLogin => 'Login required to enable';
+
+  @override
+  String get mineAutoSyncNeedCloudService => 'Available in cloud service mode only';
 
   @override
   String get mineImportProgressTitle => 'Importing in background...';
@@ -1557,7 +1566,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reminderDescription => 'Tip: When recording reminder is enabled, the system will send notifications at the specified time daily to remind you to record income and expenses.';
 
   @override
-  String get reminderIOSInstructions => '🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ iOS Simulator limitations:\n• Simulator notification features are limited\n• Recommend using real device\n• Check Xcode console for notification status\n\nIf testing in simulator, observe:\n• Xcode console log output\n• Flutter Debug Console info\n• In-app popups confirming notification sent';
+  String get reminderIOSInstructions => '🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ Important Note:\n• iOS local notifications depend on app process\n• Do not force quit app from task manager\n• Notifications work when app is in background or foreground\n• Force quitting will disable notifications\n\n💡 Usage Tips:\n• Simply press Home button to exit app\n• iOS will manage background apps automatically\n• Keep app in background to receive reminders';
 
   @override
   String get reminderAndroidInstructions => 'If notifications don\'t work properly, check:\n• App is allowed to send notifications\n• Disable battery optimization/power saving for app\n• Allow app to run in background and auto-start\n• Android 12+ needs exact alarm permission\n\n📱 Xiaomi phone special settings:\n• Settings > App Management > Bee Accounting > Notification Management\n• Tap \"Recording Reminder\" channel\n• Set importance to \"Urgent\" or \"High\"\n• Enable \"Banner notifications\", \"Sound\", \"Vibration\"\n• Security Center > App Management > Permissions > Auto-start\n\n🔒 Lock background methods:\n• Find Bee Accounting in recent tasks\n• Pull down app card to show lock icon\n• Tap lock icon to prevent cleanup';
@@ -2562,60 +2571,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get currencyBYN => 'Rouble biélorusse';
-
-  @override
-  String get supportProjectTitle => 'Soutenir le projet';
-
-  @override
-  String get supportProjectWhyTitle => 'Pourquoi avons-nous besoin de votre soutien?';
-
-  @override
-  String get supportProjectWhyDescription => 'BeeCount est un projet entièrement gratuit et open-source sans publicités ni fonctionnalités payantes. Cependant, pour le rendre disponible aux utilisateurs iOS, nous avons besoin d\'un compte développeur Apple (\$99/an) pour signer l\'application.';
-
-  @override
-  String get supportProjectAchievementTitle => 'Initial Goal Achieved';
-
-  @override
-  String get supportProjectAchievementDescription => 'Thanks to all supporters! The first iOS TestFlight beta goal has been achieved, and the app is now live.';
-
-  @override
-  String get supportProjectOngoingTitle => 'Ongoing Operation Costs';
-
-  @override
-  String supportProjectCurrentAmount(String amount) {
-    return 'Collecté: $amount';
-  }
-
-  @override
-  String supportProjectTargetAmount(String amount) {
-    return 'Objectif: $amount';
-  }
-
-  @override
-  String supportProjectProgress(String progress) {
-    return 'Progrès: $progress';
-  }
-
-  @override
-  String get supportProjectUsageTitle => 'Comment les dons sont utilisés';
-
-  @override
-  String get supportProjectUsage1 => 'Frais annuels du compte développeur Apple (\$99/an)';
-
-  @override
-  String get supportProjectUsage2 => 'Distribuer la version iOS via TestFlight';
-
-  @override
-  String get supportProjectUsage3 => 'Développement et maintenance continus du projet';
-
-  @override
-  String get supportProjectViewDonationMethods => 'Voir les méthodes de don';
-
-  @override
-  String get supportProjectNote => 'Cliquer sur le bouton vous redirigera vers GitHub pour les méthodes de don détaillées';
-
-  @override
-  String get supportProjectVoluntaryNote => 'Every contribution goes toward long-term maintenance, keeping BeeCount available for all users.';
 
   @override
   String get webdavConfiguredTitle => 'Service cloud WebDAV configuré';

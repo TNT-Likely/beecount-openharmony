@@ -5,7 +5,6 @@ import '../data/db.dart' as db;
 import '../widgets/ui/ui.dart';
 import '../widgets/biz/biz.dart';
 import '../widgets/category_icon.dart';
-import '../utils/format_utils.dart';
 import 'package:intl/intl.dart';
 import 'category_edit_page.dart';
 import 'category_migration_page.dart';
@@ -19,13 +18,19 @@ enum SortType { timeAsc, timeDesc, amountAsc, amountDesc }
 class CategoryDetailPage extends ConsumerStatefulWidget {
   final int categoryId;
   final String categoryName;
-  
+  final DateTime? startDate; // 周期开始时间（可选）
+  final DateTime? endDate;   // 周期结束时间（可选）
+  final String? periodLabel; // 周期标签（如"2024年11月"）
+
   const CategoryDetailPage({
     super.key,
     required this.categoryId,
     required this.categoryName,
+    this.startDate,
+    this.endDate,
+    this.periodLabel,
   });
-  
+
   @override
   ConsumerState<CategoryDetailPage> createState() => _CategoryDetailPageState();
 }
@@ -36,16 +41,47 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
   @override
   Widget build(BuildContext context) {
     final categoryAsync = ref.watch(_categoryStreamProvider(widget.categoryId));
-    final summaryAsync = ref.watch(_categorySummaryProvider(widget.categoryId));
     final transactionsAsync = ref.watch(_categoryTransactionsWithSortProvider(widget.categoryId));
     final currentSortType = ref.watch(_categorySortTypeProvider(widget.categoryId));
+
+    // 如果有周期限制，需要筛选交易数据
+    final filteredTransactionsAsync = transactionsAsync.when(
+      loading: () => const AsyncValue<List<db.Transaction>>.loading(),
+      error: (error, stack) => AsyncValue<List<db.Transaction>>.error(error, stack),
+      data: (transactions) {
+        if (widget.startDate != null && widget.endDate != null) {
+          final filtered = transactions.where((t) {
+            return t.happenedAt.isAfter(widget.startDate!) &&
+                   t.happenedAt.isBefore(widget.endDate!);
+          }).toList();
+          return AsyncValue.data(filtered);
+        }
+        return AsyncValue.data(transactions);
+      },
+    );
+
+    // 基于筛选后的数据计算汇总
+    final summaryAsync = filteredTransactionsAsync.when(
+      loading: () => const AsyncValue.loading(),
+      error: (error, stack) => AsyncValue.error(error, stack),
+      data: (transactions) {
+        final totalCount = transactions.length;
+        final totalAmount = transactions.fold(0.0, (sum, t) => sum + t.amount);
+        final averageAmount = totalCount > 0 ? totalAmount / totalCount : 0.0;
+        return AsyncValue.data((
+          totalCount: totalCount,
+          totalAmount: totalAmount,
+          averageAmount: averageAmount,
+        ));
+      },
+    );
     
     return Scaffold(
       body: Column(
         children: [
           categoryAsync.when(
             loading: () => PrimaryHeader(
-              title: CategoryUtils.getDisplayName(widget.categoryName, context), // 显示翻译后的名称作为fallback
+              title: AppLocalizations.of(context).categoryDetailSummaryTitle, // "分类汇总"
               showBack: true,
               actions: [
                 IconButton(
@@ -59,7 +95,7 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
               ],
             ),
             error: (error, stack) => PrimaryHeader(
-              title: CategoryUtils.getDisplayName(widget.categoryName, context),
+              title: AppLocalizations.of(context).categoryDetailSummaryTitle,
               showBack: true,
               actions: [
                 IconButton(
@@ -73,7 +109,7 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
               ],
             ),
             data: (category) => PrimaryHeader(
-              title: CategoryUtils.getDisplayName(category?.name ?? widget.categoryName, context), // 使用翻译后的分类名称
+              title: AppLocalizations.of(context).categoryDetailSummaryTitle,
               showBack: true,
               actions: [
                 IconButton(
@@ -87,7 +123,7 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
                         ),
                       ),
                     );
-                    
+
                     // 如果迁移完成，数据会自动通过Stream更新，无需手动刷新
                     if (result == true && mounted) {
                       // 响应式设计：数据库变化会自动推送到UI
@@ -106,7 +142,7 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
                         ),
                       ),
                     );
-                    
+
                     // 如果编辑成功，数据会自动通过Stream更新，无需手动刷新
                     if (result == true && mounted) {
                       // 响应式设计：数据库变化会自动推送到UI
@@ -136,7 +172,7 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
                 _buildSortControls(currentSortType),
                 // 交易记录列表
                 Expanded(
-                  child: transactionsAsync.when(
+                  child: filteredTransactionsAsync.when(
                     loading: () => const Center(child: CircularProgressIndicator()),
                     error: (error, stack) => Center(child: Text('${AppLocalizations.of(context).categoryDetailLoadFailed}: $error')),
                     data: (transactions) => _buildTransactionsList(transactions, currentSortType),
@@ -151,12 +187,6 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
   }
   
   Widget _buildSummaryCard(({int totalCount, double totalAmount, double averageAmount}) summary) {
-    final currentLedgerAsync = ref.watch(currentLedgerProvider);
-    final selectedLocale = ref.watch(languageProvider);
-    final currentLedger = currentLedgerAsync.asData?.value;
-    final currencyCode = currentLedger?.currency ?? 'CNY';
-    final isChineseLocale = selectedLocale?.languageCode == 'zh' ||
-        (selectedLocale == null && Localizations.localeOf(context).languageCode == 'zh');
     return Container(
       margin: const EdgeInsets.all(16),
       child: SectionCard(
@@ -173,10 +203,14 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
                     size: 20,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    AppLocalizations.of(context).categoryDetailSummaryTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Text(
+                      widget.periodLabel != null
+                          ? '${CategoryUtils.getDisplayName(widget.categoryName, context)} · ${widget.periodLabel}'
+                          : CategoryUtils.getDisplayName(widget.categoryName, context),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -194,16 +228,18 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
                   Expanded(
                     child: _SummaryItem(
                       label: AppLocalizations.of(context).categoryDetailTotalAmount,
-                      value: formatBalance(summary.totalAmount, currencyCode, isChineseLocale: isChineseLocale),
-                      color: summary.totalAmount >= 0 
-                        ? Colors.green 
+                      value: summary.totalAmount,
+                      isAmount: true,
+                      color: summary.totalAmount >= 0
+                        ? Colors.green
                         : Colors.red,
                     ),
                   ),
                   Expanded(
                     child: _SummaryItem(
                       label: AppLocalizations.of(context).categoryDetailAverageAmount,
-                      value: formatBalance(summary.averageAmount, currencyCode, isChineseLocale: isChineseLocale),
+                      value: summary.averageAmount,
+                      isAmount: true,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
@@ -463,28 +499,46 @@ class _CategoryDetailPageState extends ConsumerState<CategoryDetailPage> {
   }
 }
 
-class _SummaryItem extends StatelessWidget {
+class _SummaryItem extends ConsumerWidget {
   final String label;
-  final String value;
+  final dynamic value; // 可以是 String 或 double
   final Color color;
-  
+  final bool isAmount; // 是否为金额类型
+
   const _SummaryItem({
     required this.label,
     required this.value,
     required this.color,
+    this.isAmount = false,
   });
-  
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget valueWidget;
+    if (isAmount && value is double) {
+      // 金额类型,使用 AmountText
+      valueWidget = AmountText(
+        value: value as double,
+        signed: false,
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    } else {
+      // 其他类型,直接显示字符串
+      valueWidget = Text(
+        value.toString(),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+
     return Column(
       children: [
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        valueWidget,
         const SizedBox(height: 4),
         Text(
           label,

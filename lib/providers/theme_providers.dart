@@ -29,4 +29,18 @@ final primaryColorInitProvider = FutureProvider<void>((ref) async {
   });
 });
 
+// 隐私模式持久化初始化：
+// - 启动时加载保存的隐私模式状态
+// - 监听隐私模式变化并写入本地
+final hideAmountsInitProvider = FutureProvider<void>((ref) async {
+  final prefs = await SharedPreferences.getInstance();
+  final saved = prefs.getBool('hideAmounts');
+  if (saved != null) {
+    ref.read(hideAmountsProvider.notifier).state = saved;
+  }
+  ref.listen<bool>(hideAmountsProvider, (prev, next) async {
+    await prefs.setBool('hideAmounts', next);
+  });
+});
+
 // 字体持久化初始化 - 已移除，仅使用系统默认字体

@@ -712,7 +712,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mineFirstFullUpload => '첫 번째 전체 업로드';
 
   @override
-  String get mineFirstFullUploadSubtitle => '모든 로컬 가계부를 현재 Supabase에 업로드';
+  String get mineFirstFullUploadSubtitle => '모든 로컬 가계부를 클라우드에 업로드';
 
   @override
   String get mineFirstFullUploadComplete => '완료';
@@ -794,6 +794,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mineUploadNeedLogin => '로그인이 필요합니다';
 
   @override
+  String get mineUploadNeedCloudService => '클라우드 서비스 모드에서만 사용 가능';
+
+  @override
   String get mineUploadInProgress => '업로드 중...';
 
   @override
@@ -810,6 +813,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get mineDownloadTitle => '다운로드';
+
+  @override
+  String get mineDownloadNeedCloudService => '클라우드 서비스 모드에서만 사용 가능';
 
   @override
   String get mineDownloadComplete => '완료';
@@ -848,6 +854,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get mineAutoSyncNeedLogin => '활성화하려면 로그인이 필요합니다';
+
+  @override
+  String get mineAutoSyncNeedCloudService => '클라우드 서비스 모드에서만 사용 가능';
 
   @override
   String get mineImportProgressTitle => '백그라운드에서 가져오는 중...';
@@ -2562,60 +2571,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get currencyBYN => '벨라루스 루블';
-
-  @override
-  String get supportProjectTitle => '프로젝트 지원';
-
-  @override
-  String get supportProjectWhyTitle => '왜 귀하의 지원이 필요한가요?';
-
-  @override
-  String get supportProjectWhyDescription => 'BeeCount는 광고나 유료 기능이 없는 완전 무료 오픈소스 프로젝트입니다. 하지만 iOS 사용자가 사용할 수 있도록 하려면 앱에 서명하기 위한 Apple Developer Account(\$99/년)가 필요합니다.';
-
-  @override
-  String get supportProjectAchievementTitle => 'Initial Goal Achieved';
-
-  @override
-  String get supportProjectAchievementDescription => 'Thanks to all supporters! The first iOS TestFlight beta goal has been achieved, and the app is now live.';
-
-  @override
-  String get supportProjectOngoingTitle => 'Ongoing Operation Costs';
-
-  @override
-  String supportProjectCurrentAmount(String amount) {
-    return '모금액: $amount';
-  }
-
-  @override
-  String supportProjectTargetAmount(String amount) {
-    return '목표: $amount';
-  }
-
-  @override
-  String supportProjectProgress(String progress) {
-    return '진행률: $progress';
-  }
-
-  @override
-  String get supportProjectUsageTitle => '기부금 사용처';
-
-  @override
-  String get supportProjectUsage1 => 'Apple Developer Account 연회비(\$99/년)';
-
-  @override
-  String get supportProjectUsage2 => 'TestFlight를 통한 iOS 버전 배포';
-
-  @override
-  String get supportProjectUsage3 => '프로젝트의 지속적인 개발 및 유지보수';
-
-  @override
-  String get supportProjectViewDonationMethods => '기부 방법 보기';
-
-  @override
-  String get supportProjectNote => '버튼을 클릭하면 GitHub로 리디렉션되어 자세한 기부 방법을 확인할 수 있습니다';
-
-  @override
-  String get supportProjectVoluntaryNote => 'Every contribution goes toward long-term maintenance, keeping BeeCount available for all users.';
 
   @override
   String get webdavConfiguredTitle => 'WebDAV 클라우드 서비스 설정 완료';

@@ -666,6 +666,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                             ?.value ??
                         false) ||
                     _localChartDismissed;
+                final hide = ref.watch(hideAmountsProvider);
 
                 return GestureDetector(
                   onHorizontalDragEnd: (details) {
@@ -699,6 +700,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                           values: values,
                           xLabels: xLabels,
                           highlightIndex: highlightIndex,
+                          hideAmounts: hide,
                           themeColor: Theme.of(context).colorScheme.primary,
                           // 使用统一图表令牌
                           lineWidth: AppChartTokens.lineWidth,
@@ -777,7 +779,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                         for (final item in catData)
                           InkWell(
                             onTap: () => _openCategoryDetail(
-                                context, item.id, item.name, start, end, _type),
+                                context, ref, _scope, selMonth, item.id, item.name, start, end, _type),
                             child: CategoryRankRow(
                               name: item.name,
                               iconName: item.icon,
@@ -871,15 +873,24 @@ double _computeAverage(dynamic seriesRaw, String scope) {
 }
 
 // 打开分类详情页面
-void _openCategoryDetail(BuildContext context, int? categoryId,
+void _openCategoryDetail(BuildContext context, WidgetRef ref, String scope, DateTime selMonth, int? categoryId,
     String categoryName, DateTime start, DateTime end, String type) {
   if (categoryId == null) return;
+
+  // 生成周期标签（不包含支出/收入后缀）
+  String? periodLabel;
+  if (scope != 'all') {
+    periodLabel = _currentPeriodLabel(scope, selMonth, context);
+  }
 
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => CategoryDetailPage(
         categoryId: categoryId,
         categoryName: categoryName,
+        startDate: scope != 'all' ? start : null,
+        endDate: scope != 'all' ? end : null,
+        periodLabel: periodLabel,
       ),
     ),
   );

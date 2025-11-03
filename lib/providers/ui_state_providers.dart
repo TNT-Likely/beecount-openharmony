@@ -129,6 +129,8 @@ final appSplashInitProvider = FutureProvider<void>((ref) async {
       ref.watch(appInitProvider.future),
       // 等待字体缩放初始化
       ref.watch(fontScaleInitProvider.future),
+      // 等待隐私模式初始化
+      ref.watch(hideAmountsInitProvider.future),
     ]);
     print('✅ 基础配置初始化完成');
     
@@ -148,16 +150,16 @@ final appSplashInitProvider = FutureProvider<void>((ref) async {
     ref.read(lastMonthlyTotalsProvider(monthlyParams).notifier).state = monthlyResult;
     print('💰 月度统计预加载完成: $monthlyResult');
     
-    // 预加载账本总数统计  
+    // 预加载账本总数统计
     final countsResult = await ref.read(countsForLedgerProvider(ledgerId).future);
     print('🔢 账本统计预加载完成: $countsResult');
-    
+
     // 预加载首屏交易数据（包含分类信息）
     final repo = ref.read(repositoryProvider);
     final recentTransactionsWithCategory = await repo.transactionsWithCategoryAll(ledgerId: ledgerId).first;
     ref.read(cachedTransactionsWithCategoryProvider.notifier).state = recentTransactionsWithCategory;
     print('💳 交易列表预加载完成: ${recentTransactionsWithCategory.length}条记录');
-    
+
   } catch (e) {
     print('❌ 预加载数据失败: $e');
   }

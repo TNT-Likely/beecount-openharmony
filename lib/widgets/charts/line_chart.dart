@@ -20,6 +20,7 @@ class LineChart extends StatelessWidget {
   final bool showGrid;
   final bool showDots;
   final bool annotate;
+  final bool hideAmounts; // 是否隐藏金额
   final Color themeColor;
   // 令牌化参数
   final double lineWidth;
@@ -46,6 +47,7 @@ class LineChart extends StatelessWidget {
     this.showGrid = true,
     this.showDots = true,
     this.annotate = true,
+    this.hideAmounts = false,
     required this.themeColor,
     this.lineWidth = 2.0,
     this.dotRadius = 2.5,
@@ -86,6 +88,7 @@ class LineChart extends StatelessWidget {
               showGrid: showGrid,
               showDots: showDots,
               annotate: annotate,
+              hideAmounts: hideAmounts,
               themeColor: themeColor,
               lineWidth: lineWidth,
               dotRadius: dotRadius,
@@ -214,6 +217,7 @@ class _LinePainter extends CustomPainter {
   final bool showGrid;
   final bool showDots;
   final bool annotate;
+  final bool hideAmounts;
   final Color themeColor;
   final double lineWidth;
   final double dotRadius;
@@ -231,6 +235,7 @@ class _LinePainter extends CustomPainter {
     required this.showGrid,
     required this.showDots,
     required this.annotate,
+    required this.hideAmounts,
     required this.themeColor,
     this.lineWidth = 2.0,
     this.dotRadius = 2.5,
@@ -417,8 +422,9 @@ class _LinePainter extends CustomPainter {
       final textStyle =
           TextStyle(fontSize: yLabelFontSize - 1, color: BeeColors.primaryText);
       for (final i in nzIndices) {
+        final displayText = hideAmounts ? '**' : _fmt(values[i]);
         final tp = TextPainter(
-          text: TextSpan(text: _fmt(values[i]), style: textStyle),
+          text: TextSpan(text: displayText, style: textStyle),
           textDirection: TextDirection.ltr,
         )..layout(maxWidth: 60);
         final pos = allPoints[i] + const Offset(0, -10);
@@ -441,10 +447,11 @@ class _LinePainter extends CustomPainter {
         for (int i = 0; i < secondaryValues!.length; i++) {
           final v = secondaryValues![i];
           if (v == 0) continue;
+          final displayText = hideAmounts ? '**' : _fmt(v);
           final pos = Offset(12 + i * dx, yForSec(v)) + const Offset(0, -10);
           final tp = TextPainter(
             text: TextSpan(
-                text: _fmt(v),
+                text: displayText,
                 style: TextStyle(
                     fontSize: yLabelFontSize - 1, color: secondaryColor)),
             textDirection: TextDirection.ltr,

@@ -228,7 +228,7 @@ class _CategoryEditPageState extends ConsumerState<CategoryEditPage> {
                     ),
                   ),
                   
-                  if (isEditing && !isDefaultCategory) ...[
+                  if (isEditing) ...[
                     const SizedBox(height: 32),
                     const Divider(),
                     const SizedBox(height: 16),
@@ -244,7 +244,7 @@ class _CategoryEditPageState extends ConsumerState<CategoryEditPage> {
                         leading: const Icon(Icons.delete, color: Colors.red),
                         title: Text(AppLocalizations.of(context).categoryDeleteTitle),
                         subtitle: Text(AppLocalizations.of(context).categoryDeleteSubtitle),
-                        onTap: isDefaultCategory ? null : _deleteCategory,
+                        onTap: _deleteCategory,
                       ),
                     ),
                   ],

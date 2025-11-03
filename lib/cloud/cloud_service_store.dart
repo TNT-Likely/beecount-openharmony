@@ -9,7 +9,8 @@ class CloudServiceStore {
   static const _kActiveType = 'cloud_active_type'; // local | supabase | webdav
   static const _kSupabaseCfg = 'cloud_supabase_cfg';
   static const _kWebdavCfg = 'cloud_webdav_cfg';
-  static const _kFirstFullUploadFlag = 'cloud_first_full_upload_pending';
+  static const _kFirstFullUploadFlagSupabase = 'cloud_first_full_upload_pending_supabase';
+  static const _kFirstFullUploadFlagWebdav = 'cloud_first_full_upload_pending_webdav';
 
   /// 加载当前激活的云服务配置
   Future<CloudServiceConfig> loadActive() async {
@@ -89,8 +90,8 @@ class CloudServiceStore {
       case CloudBackendType.supabase:
         await sp.setString(_kSupabaseCfg, encodeCloudConfig(cfg));
         await sp.setString(_kActiveType, 'supabase');
-        // 标记需要首次全量上传
-        await sp.setBool(_kFirstFullUploadFlag, true);
+        // 标记需要首次全量上传（仅针对 Supabase）
+        await sp.setBool(_kFirstFullUploadFlagSupabase, true);
         // 重新初始化 Supabase
         await SupabaseInitializer.initialize(cfg);
         break;
@@ -98,8 +99,8 @@ class CloudServiceStore {
       case CloudBackendType.webdav:
         await sp.setString(_kWebdavCfg, encodeCloudConfig(cfg));
         await sp.setString(_kActiveType, 'webdav');
-        // 标记需要首次全量上传
-        await sp.setBool(_kFirstFullUploadFlag, true);
+        // 标记需要首次全量上传（仅针对 WebDAV）
+        await sp.setBool(_kFirstFullUploadFlagWebdav, true);
         // 清理 Supabase 实例
         await SupabaseInitializer.dispose();
         break;
@@ -145,8 +146,8 @@ class CloudServiceStore {
           final cfg = decodeCloudConfig(raw);
           if (!cfg.valid) return false;
           await sp.setString(_kActiveType, 'supabase');
-          // 标记需要首次全量上传
-          await sp.setBool(_kFirstFullUploadFlag, true);
+          // 标记需要首次全量上传（仅针对 Supabase）
+          await sp.setBool(_kFirstFullUploadFlagSupabase, true);
           return true;
         } catch (e) {
           logW('cloudStore', '激活Supabase配置失败: $e');
@@ -160,8 +161,8 @@ class CloudServiceStore {
           final cfg = decodeCloudConfig(raw);
           if (!cfg.valid) return false;
           await sp.setString(_kActiveType, 'webdav');
-          // 标记需要首次全量上传
-          await sp.setBool(_kFirstFullUploadFlag, true);
+          // 标记需要首次全量上传（仅针对 WebDAV）
+          await sp.setBool(_kFirstFullUploadFlagWebdav, true);
           return true;
         } catch (e) {
           logW('cloudStore', '激活WebDAV配置失败: $e');
@@ -172,11 +173,31 @@ class CloudServiceStore {
 
   Future<bool> isFirstFullUploadPending() async {
     final sp = await SharedPreferences.getInstance();
-    return sp.getBool(_kFirstFullUploadFlag) ?? false;
+    final activeType = sp.getString(_kActiveType) ?? 'local';
+
+    switch (activeType) {
+      case 'supabase':
+        return sp.getBool(_kFirstFullUploadFlagSupabase) ?? false;
+      case 'webdav':
+        return sp.getBool(_kFirstFullUploadFlagWebdav) ?? false;
+      default:
+        return false;
+    }
   }
 
   Future<void> clearFirstFullUploadFlag() async {
     final sp = await SharedPreferences.getInstance();
-    await sp.remove(_kFirstFullUploadFlag);
+    final activeType = sp.getString(_kActiveType) ?? 'local';
+
+    switch (activeType) {
+      case 'supabase':
+        await sp.remove(_kFirstFullUploadFlagSupabase);
+        break;
+      case 'webdav':
+        await sp.remove(_kFirstFullUploadFlagWebdav);
+        break;
+      default:
+        break;
+    }
   }
 }

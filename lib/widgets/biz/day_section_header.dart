@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../styles/colors.dart';
 import '../../styles/design.dart';
 import '../../l10n/app_localizations.dart';
+import '../../providers/theme_providers.dart';
 import 'format_money.dart';
 
-class DaySectionHeader extends StatelessWidget {
+class DaySectionHeader extends ConsumerWidget {
   final String dateText; // yyyy-MM-dd
   final double income;
   final double expense;
-  final bool hide;
+  final bool? hide; // 改为可选,null时使用全局状态
   const DaySectionHeader(
       {super.key,
       required this.dateText,
       required this.income,
       required this.expense,
-      this.hide = false});
+      this.hide});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     String getWeekday(String yyyyMMdd) {
       try {
         final dt = DateTime.parse(yyyyMMdd);
@@ -45,6 +47,8 @@ class DaySectionHeader extends StatelessWidget {
       }
     }
 
+    // 优先使用传入的hide,否则使用全局状态
+    final shouldHide = hide ?? ref.watch(hideAmountsProvider);
     String fmt(double v) => v == 0 ? '' : formatMoneyCompact(v, maxDecimals: 2);
     final grey = BeeColors.black54;
     final week = getWeekday(dateText);
@@ -72,14 +76,14 @@ class DaySectionHeader extends StatelessWidget {
             ]
           ]),
           Row(children: [
-            if (!hide && fmt(expense).isNotEmpty)
+            if (shouldHide == false && fmt(expense).isNotEmpty)
               Text('${l10n.homeExpense} ${fmt(expense)}',
                   style: Theme.of(context)
                       .textTheme
                       .labelMedium
                       ?.copyWith(color: grey, fontSize: 12)),
-            if (!hide && fmt(income).isNotEmpty) const SizedBox(width: 12),
-            if (!hide && fmt(income).isNotEmpty)
+            if (shouldHide == false && fmt(income).isNotEmpty) const SizedBox(width: 12),
+            if (shouldHide == false && fmt(income).isNotEmpty)
               Text('${l10n.homeIncome} ${fmt(income)}',
                   style: Theme.of(context)
                       .textTheme

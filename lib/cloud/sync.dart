@@ -101,13 +101,27 @@ Future<String> exportTransactionsJson(BeeDatabase db, int ledgerId) async {
   final ledger = await (db.select(db.ledgers)
         ..where((l) => l.id.equals(ledgerId)))
       .getSingleOrNull();
+
+  // 账户信息
+  final accounts = await (db.select(db.accounts)
+        ..where((a) => a.ledgerId.equals(ledgerId)))
+      .get();
+  final accountItems = accounts
+      .map((a) => {
+            'name': a.name,
+            'type': a.type,
+            'initialBalance': a.initialBalance,
+          })
+      .toList();
+
   final payload = {
-    'version': 1,
+    'version': 2, // 版本升级,新增账户信息
     'exportedAt': DateTime.now().toUtc().toIso8601String(),
     'ledgerId': ledgerId,
     'ledgerName': ledger?.name,
     'currency': ledger?.currency,
     'count': items.length,
+    'accounts': accountItems,
     'items': items,
   };
   return jsonEncode(payload);
@@ -120,6 +134,7 @@ Future<({int inserted, int skipped})> importTransactionsJson(
     {void Function(int done, int total)? onProgress}) async {
   final data = jsonDecode(jsonStr) as Map<String, dynamic>;
   final items = (data['items'] as List).cast<Map<String, dynamic>>();
+
   // optional: update local ledger name & currency if present
   final ledgerName = data['ledgerName'] as String?;
   final currency = data['currency'] as String?;
@@ -128,6 +143,33 @@ Future<({int inserted, int skipped})> importTransactionsJson(
       await repo.updateLedger(
           id: ledgerId, name: ledgerName, currency: currency);
     } catch (_) {}
+  }
+
+  // 导入账户信息 (version 2+)
+  final accounts = data['accounts'] as List?;
+  if (accounts != null) {
+    try {
+      // 获取现有账户
+      final existingAccounts = await repo.accountsForLedger(ledgerId).first;
+      final existingAccountNames = existingAccounts.map((a) => a.name).toSet();
+
+      // 只导入不存在的账户,避免重复
+      for (final acc in accounts.cast<Map<String, dynamic>>()) {
+        final name = acc['name'] as String;
+        if (!existingAccountNames.contains(name)) {
+          final type = acc['type'] as String? ?? 'cash';
+          final initialBalance = (acc['initialBalance'] as num?)?.toDouble() ?? 0.0;
+          await repo.createAccount(
+            ledgerId: ledgerId,
+            name: name,
+            type: type,
+            initialBalance: initialBalance,
+          );
+        }
+      }
+    } catch (_) {
+      // 账户导入失败不影响交易导入
+    }
   }
   int inserted = 0;
   int skipped = 0;

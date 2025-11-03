@@ -9,7 +9,12 @@ import '../../data/db.dart';
 import 'account_picker.dart';
 import '../../providers.dart';
 
-typedef AmountEditorResult = ({double amount, String? note, DateTime date, int? accountId});
+typedef AmountEditorResult = ({
+  double amount,
+  String? note,
+  DateTime date,
+  int? accountId
+});
 
 class AmountEditorSheet extends StatefulWidget {
   final String categoryName; // 仅用于上层提交，不在UI展示
@@ -52,6 +57,10 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
   // 高频备注列表（包含使用次数）
   List<({String note, int count})> _frequentNotes = [];
 
+  // 备注框焦点节点
+  final FocusNode _noteFocusNode = FocusNode();
+  bool _noteFieldHasFocus = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,8 +76,21 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
     _amountStr = trimmed.isEmpty ? '0' : trimmed;
     _noteCtrl.text = widget.initialNote ?? '';
 
+    // 监听焦点变化
+    _noteFocusNode.addListener(() {
+      setState(() {
+        _noteFieldHasFocus = _noteFocusNode.hasFocus;
+      });
+    });
+
     // 加载最近使用的备注
     _loadRecentNotes();
+  }
+
+  @override
+  void dispose() {
+    _noteFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _loadRecentNotes() async {
@@ -140,6 +162,11 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final text = Theme.of(context).textTheme;
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+    // 如果备注框有焦点且键盘弹出，固定增加100的padding
+    final extraPadding = (_noteFieldHasFocus && keyboardHeight > 0) ? 100.0 : 0.0;
+
     double parsed() => double.tryParse(_amountStr) ?? 0.0;
 
     void applyOp(String op) {
@@ -186,8 +213,14 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 100),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          12,
+          16,
+          16 + extraPadding,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,9 +270,10 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
             const SizedBox(height: 10),
             // 备注单独一行
             TextField(
+              focusNode: _noteFocusNode,
               controller: _noteCtrl,
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.commonNoteHint,
+                hintText: AppLocalizations.of(context).commonNoteHint,
                 isDense: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -259,7 +293,8 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: _frequentNotes.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final item = _frequentNotes[index];
                     return InkWell(
@@ -323,17 +358,21 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
               Consumer(
                 builder: (context, ref, child) {
                   // 检查账户功能是否启用
-                  final accountFeatureAsync = ref.watch(accountFeatureEnabledProvider);
+                  final accountFeatureAsync =
+                      ref.watch(accountFeatureEnabledProvider);
                   return accountFeatureAsync.when(
                     data: (enabled) {
                       if (!enabled) return const SizedBox.shrink();
 
                       // 获取选中的账户信息
-                      String accountLabel = AppLocalizations.of(context)!.accountNone;
+                      String accountLabel =
+                          AppLocalizations.of(context).accountNone;
                       if (_selectedAccountId != null) {
                         // 使用FutureBuilder获取账户名称
                         return FutureBuilder<Account?>(
-                          future: ref.read(repositoryProvider).getAccount(_selectedAccountId!),
+                          future: ref
+                              .read(repositoryProvider)
+                              .getAccount(_selectedAccountId!),
                           builder: (context, snapshot) {
                             if (snapshot.hasData && snapshot.data != null) {
                               accountLabel = snapshot.data!.name;
@@ -434,7 +473,7 @@ class _AmountEditorSheetState extends State<AmountEditorSheet> {
                           height: 60,
                           child: Center(
                             child: Text(
-                              AppLocalizations.of(context)!.commonFinish,
+                              AppLocalizations.of(context).commonFinish,
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 import '../widgets/ui/ui.dart';
+import '../widgets/biz/amount_text.dart';
 import '../data/db.dart' as db;
 import '../l10n/app_localizations.dart';
 import 'account_edit_page.dart';
@@ -170,8 +171,10 @@ class AccountsPage extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text(
-                                  '¥${balance.toStringAsFixed(2)}',
+                                AmountText(
+                                  value: balance,
+                                  signed: false,
+                                  showCurrency: true,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,

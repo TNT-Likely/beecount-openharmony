@@ -206,7 +206,7 @@
   "mineCloudServiceCustom": "自訂 Supabase",
   "mineCloudServiceWebDAV": "自訂雲服務 (WebDAV)",
   "mineFirstFullUpload": "首次全量上傳",
-  "mineFirstFullUploadSubtitle": "將所有本地帳本上傳到當前 Supabase",
+  "mineFirstFullUploadSubtitle": "將所有本地帳本上傳到雲端",
   "mineFirstFullUploadComplete": "完成",
   "mineFirstFullUploadMessage": "已上傳當前帳本。其它帳本請切換後再上傳。",
   "mineFirstFullUploadFailed": "失敗",
@@ -228,12 +228,14 @@
   "mineSyncMessage": "說明: {message}",
   "mineUploadTitle": "上傳",
   "mineUploadNeedLogin": "需登入",
+  "mineUploadNeedCloudService": "僅限雲端服務模式可用",
   "mineUploadInProgress": "正在上傳中…",
   "mineUploadRefreshing": "重新整理中…",
   "mineUploadSynced": "已同步",
   "mineUploadSuccess": "已上傳",
   "mineUploadSuccessMessage": "當前帳本已同步到雲端",
   "mineDownloadTitle": "下載",
+  "mineDownloadNeedCloudService": "僅限雲端服務模式可用",
   "mineDownloadComplete": "完成",
   "mineDownloadResult": "新增匯入：{inserted} 條\n已存在跳過：{skipped} 條\n清理歷史重複：{deleted} 條",
   "mineLoginTitle": "登入 / 註冊",
@@ -246,6 +248,7 @@
   "mineAutoSyncTitle": "自動同步帳本",
   "mineAutoSyncSubtitle": "記帳後自動上傳到雲端",
   "mineAutoSyncNeedLogin": "需登入後可開啟",
+  "mineAutoSyncNeedCloudService": "僅限雲端服務模式可用",
   "mineImportProgressTitle": "後台匯入中…",
   "mineImportProgressSubtitle": "進度：{done}/{total}，成功 {ok}，失敗 {fail}",
   "mineImportCompleteTitle": "匯入完成",
@@ -475,7 +478,7 @@
   "reminderIOSTestTitle": "iOS通知測試",
   "reminderIOSTestMessage": "已發送測試通知。\n\n🍎 iOS模擬器限制：\n• 通知可能不會在通知中心顯示\n• 橫幅提醒可能不工作\n• 但Xcode控制台會顯示日誌\n\n💡 除錯方法：\n• 檢視Xcode控制台輸出\n• 檢查Flutter日誌資訊\n• 使用真機測試獲得完整體驗",
   "reminderDescription": "提示：開啟記帳提醒後，系統會在每天指定時間發送通知提醒您記錄收支。",
-  "reminderIOSInstructions": "🍎 iOS通知設定：\n• 設定 > 通知 > 蜜蜂記帳\n• 開啟\"允許通知\"\n• 設定通知樣式：橫幅或提醒\n• 開啟聲音和震動\n\n⚠️ iOS模擬器限制：\n• 模擬器通知功能有限\n• 建議使用真機測試\n• 檢視Xcode控制台了解通知狀態\n\n如果在模擬器中測試，請觀察：\n• Xcode控制台日誌輸出\n• Flutter Debug Console資訊\n• 應用程式內彈窗確認通知發送",
+  "reminderIOSInstructions": "🍎 iOS通知設定：\n• 設定 > 通知 > 蜜蜂記帳\n• 開啟\"允許通知\"\n• 設定通知樣式：橫幅或提醒\n• 開啟聲音和震動\n\n⚠️ 重要提示：\n• iOS本地通知依賴應用程序進程\n• 請勿在任務管理器中划掉應用\n• 應用在後台或前台時通知正常\n• 完全關閉應用會導致通知失效\n\n💡 使用建議：\n• 日常使用後直接按Home鍵退出\n• iOS會自動管理後台應用\n• 保持應用在後台即可收到提醒",
   "reminderAndroidInstructions": "如果通知無法正常工作，請檢查：\n• 已允許應用程式發送通知\n• 關閉應用程式的電池最佳化/省電模式\n• 允許應用程式在背景執行和自啟動\n• Android 12+需要精確鬧鐘權限\n\n📱 小米手機特殊設定：\n• 設定 > 應用程式管理 > 蜜蜂記帳 > 通知管理\n• 點擊\"記帳提醒\"頻道\n• 設定重要性為\"緊急\"或\"高\"\n• 開啟\"橫幅通知\"、\"聲音\"、\"震動\"\n• 安全中心 > 應用程式管理 > 權限 > 自啟動\n\n🔒 鎖定背景方法：\n• 最近任務中找到蜜蜂記帳\n• 向下拉動應用程式卡片顯示鎖定圖示\n• 點擊鎖定圖示防止被清理",
 
   "categoryDetailLoadFailed": "載入失敗",
@@ -937,40 +940,6 @@
   "currencyRUB": "盧布",
   "currencyBYN": "白俄羅斯盧布",
 
-  "supportProjectTitle": "支持項目",
-  "supportProjectWhyTitle": "為什麼需要您的支持?",
-  "supportProjectWhyDescription": "蜜蜂記帳是完全免費開源的專案,沒有任何廣告和付費功能。但要讓 iOS 用戶能夠正常使用,需要申請 Apple 開發者帳號($99/年)來簽名應用程式。",
-  "supportProjectGoalTitle": "籌款目標",
-  "supportProjectCurrentAmount": "已籌集: {amount}",
-  "@supportProjectCurrentAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectTargetAmount": "目標: {amount}",
-  "@supportProjectTargetAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectProgress": "進度: {progress}",
-  "@supportProjectProgress": {
-    "placeholders": {
-      "progress": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectUsageTitle": "捐贈用途",
-  "supportProjectUsage1": "申請 Apple 開發者帳號($99/年)",
-  "supportProjectUsage2": "通過 TestFlight 分發 iOS 版本",
-  "supportProjectUsage3": "維護項目的持續開發",
-  "supportProjectViewDonationMethods": "查看捐贈方式",
-  "supportProjectNote": "點擊按鈕將跳轉到 GitHub 查看詳細捐贈方式",
 
   "webdavConfiguredTitle": "WebDAV 雲服務已設定",
   "webdavConfiguredMessage": "WebDAV 雲服務使用設定時提供的憑證，無需額外登入。",

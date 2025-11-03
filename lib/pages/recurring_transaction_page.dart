@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../providers.dart';
 import '../widgets/ui/ui.dart';
+import '../widgets/biz/amount_text.dart';
 import '../data/db.dart';
 import '../l10n/app_localizations.dart';
 import '../services/recurring_transaction_service.dart';
@@ -172,8 +173,10 @@ class _RecurringTransactionCard extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        '${recurring.type == 'expense' ? '-' : '+'}${recurring.amount.toStringAsFixed(2)}',
+                      AmountText(
+                        value: recurring.type == 'expense' ? -recurring.amount : recurring.amount,
+                        signed: true,
+                        decimals: 2,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: recurring.type == 'expense' ? Colors.red : Colors.green,
                           fontWeight: FontWeight.bold,

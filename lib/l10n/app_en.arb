@@ -309,7 +309,7 @@
   "mineCloudServiceCustom": "Custom Supabase",
   "mineCloudServiceWebDAV": "Custom Cloud Service (WebDAV)",
   "mineFirstFullUpload": "First Full Upload",
-  "mineFirstFullUploadSubtitle": "Upload all local ledgers to current Supabase",
+  "mineFirstFullUploadSubtitle": "Upload all local ledgers to cloud",
   "mineFirstFullUploadComplete": "Complete",
   "mineFirstFullUploadMessage": "Current ledger uploaded. Switch to other ledgers to upload them.",
   "mineFirstFullUploadFailed": "Failed",
@@ -331,12 +331,14 @@
   "mineSyncMessage": "Message: {message}",
   "mineUploadTitle": "Upload",
   "mineUploadNeedLogin": "Login required",
+  "mineUploadNeedCloudService": "Available in cloud service mode only",
   "mineUploadInProgress": "Uploading...",
   "mineUploadRefreshing": "Refreshing...",
   "mineUploadSynced": "Synced",
   "mineUploadSuccess": "Uploaded",
   "mineUploadSuccessMessage": "Current ledger synced to cloud",
   "mineDownloadTitle": "Download",
+  "mineDownloadNeedCloudService": "Available in cloud service mode only",
   "mineDownloadComplete": "Complete",
   "mineDownloadResult": "New imports: {inserted}\nExisting skipped: {skipped}\nDuplicates cleaned: {deleted}",
   "mineLoginTitle": "Login / Register",
@@ -349,6 +351,7 @@
   "mineAutoSyncTitle": "Auto sync ledger",
   "mineAutoSyncSubtitle": "Auto upload to cloud after recording",
   "mineAutoSyncNeedLogin": "Login required to enable",
+  "mineAutoSyncNeedCloudService": "Available in cloud service mode only",
   "mineImportProgressTitle": "Importing in background...",
   "mineImportProgressSubtitle": "Progress: {done}/{total}, Success {ok}, Failed {fail}",
   "mineImportCompleteTitle": "Import complete",
@@ -585,7 +588,7 @@
   "reminderIOSTestTitle": "iOS Notification Test",
   "reminderIOSTestMessage": "Test notification sent.\n\n🍎 iOS Simulator limitations:\n• Notifications may not show in notification center\n• Banner alerts may not work\n• But Xcode console will show logs\n\n💡 Debug methods:\n• Check Xcode console output\n• Check Flutter log info\n• Use real device for full experience",
   "reminderDescription": "Tip: When recording reminder is enabled, the system will send notifications at the specified time daily to remind you to record income and expenses.",
-  "reminderIOSInstructions": "🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ iOS Simulator limitations:\n• Simulator notification features are limited\n• Recommend using real device\n• Check Xcode console for notification status\n\nIf testing in simulator, observe:\n• Xcode console log output\n• Flutter Debug Console info\n• In-app popups confirming notification sent",
+  "reminderIOSInstructions": "🍎 iOS notification settings:\n• Settings > Notifications > Bee Accounting\n• Enable \"Allow Notifications\"\n• Set notification style: Banner or Alert\n• Enable sound and vibration\n\n⚠️ Important Note:\n• iOS local notifications depend on app process\n• Do not force quit app from task manager\n• Notifications work when app is in background or foreground\n• Force quitting will disable notifications\n\n💡 Usage Tips:\n• Simply press Home button to exit app\n• iOS will manage background apps automatically\n• Keep app in background to receive reminders",
   "reminderAndroidInstructions": "If notifications don't work properly, check:\n• App is allowed to send notifications\n• Disable battery optimization/power saving for app\n• Allow app to run in background and auto-start\n• Android 12+ needs exact alarm permission\n\n📱 Xiaomi phone special settings:\n• Settings > App Management > Bee Accounting > Notification Management\n• Tap \"Recording Reminder\" channel\n• Set importance to \"Urgent\" or \"High\"\n• Enable \"Banner notifications\", \"Sound\", \"Vibration\"\n• Security Center > App Management > Permissions > Auto-start\n\n🔒 Lock background methods:\n• Find Bee Accounting in recent tasks\n• Pull down app card to show lock icon\n• Tap lock icon to prevent cleanup",
 
   "categoryDetailLoadFailed": "Load failed",
@@ -1154,43 +1157,6 @@
   "currencyRUB": "Russian Ruble",
   "currencyBYN": "Belarusian Ruble",
 
-  "supportProjectTitle": "Support Project",
-  "supportProjectWhyTitle": "Why We Need Your Support?",
-  "supportProjectWhyDescription": "BeeCount is a completely free and open-source project with no ads or paid features. Ongoing operations require annual renewal of Apple Developer Account ($99/year) to keep the iOS version accessible. Your support helps the project continue to grow and benefit more users.",
-  "supportProjectAchievementTitle": "Initial Goal Achieved",
-  "supportProjectAchievementDescription": "Thanks to all supporters! The first iOS TestFlight beta goal has been achieved, and the app is now live.",
-  "supportProjectOngoingTitle": "Ongoing Operation Costs",
-  "supportProjectCurrentAmount": "Raised: {amount}",
-  "@supportProjectCurrentAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectTargetAmount": "Goal: {amount}",
-  "@supportProjectTargetAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectProgress": "Progress: {progress}",
-  "@supportProjectProgress": {
-    "placeholders": {
-      "progress": {
-        "type": "String"
-      }
-    }
-  },
-  "supportProjectUsageTitle": "How Funds Are Used",
-  "supportProjectUsage1": "Annual Apple Developer Account renewal ($99/year)",
-  "supportProjectUsage2": "Continuous maintenance and new feature development",
-  "supportProjectUsage3": "Support for HarmonyOS and cross-platform adaptation",
-  "supportProjectViewDonationMethods": "View Donation Methods",
-  "supportProjectNote": "💡 Donations are completely voluntary, the project remains free and open-source forever",
-  "supportProjectVoluntaryNote": "Every contribution goes toward long-term maintenance, keeping BeeCount available for all users.",
 
   "webdavConfiguredTitle": "WebDAV Cloud Service Configured",
   "webdavConfiguredMessage": "WebDAV cloud service uses the credentials provided during configuration, no additional login required.",

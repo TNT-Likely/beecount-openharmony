@@ -161,15 +161,10 @@ class _CategoryGridViewState extends ConsumerState<_CategoryGridView> {
     // 获取默认分类名单
     final defaultNames = CategoryService.getDefaultCategoryNames(widget.kind);
 
-    // 获取当前类型的所有分类（包括数据库分类和虚拟默认分类）
+    // 获取当前类型的所有分类
     final dbCategories = widget.categoriesWithCount
         .where((item) => item.category.kind == widget.kind)
         .toList();
-
-    // 创建默认分类的虚拟CategoryWithCount对象用于显示
-    final defaultCategoryNames = widget.kind == 'expense'
-        ? CategoryService.defaultExpenseCategories
-        : CategoryService.defaultIncomeCategories;
 
     final allCategoryItems = <({db.Category category, int transactionCount, bool isDefault})>[];
 
@@ -180,26 +175,6 @@ class _CategoryGridViewState extends ConsumerState<_CategoryGridView> {
         transactionCount: item.transactionCount,
         isDefault: defaultNames.contains(item.category.name),
       ));
-    }
-
-    // 添加数据库中不存在的默认分类（虚拟分类）
-    for (final name in defaultCategoryNames) {
-      final existsInDb = dbCategories.any((item) => item.category.name == name);
-      if (!existsInDb) {
-        final iconName = CategoryService.getDefaultCategoryIcon(name, widget.kind);
-        final virtualCategory = db.Category(
-          id: -1,
-          name: name,
-          kind: widget.kind,
-          icon: iconName,
-          sortOrder: 999, // 虚拟分类默认排在最后
-        );
-        allCategoryItems.add((
-          category: virtualCategory,
-          transactionCount: 0,
-          isDefault: true,
-        ));
-      }
     }
 
     // 按 sortOrder 排序
@@ -213,27 +188,6 @@ class _CategoryGridViewState extends ConsumerState<_CategoryGridView> {
       newIndex -= 1;
     }
 
-    // 检查被拖拽的分类是否为虚拟分类，如果是则先保存到数据库
-    final draggedItem = _categories[oldIndex];
-    if (draggedItem.category.id == -1) {
-      final database = ref.read(databaseProvider);
-      final newId = await database.into(database.categories).insert(
-        db.CategoriesCompanion.insert(
-          name: draggedItem.category.name,
-          kind: draggedItem.category.kind,
-          icon: drift.Value(draggedItem.category.icon),
-          sortOrder: drift.Value(0), // 临时值，后续会更新
-        ),
-      );
-
-      // 更新本地列表中的虚拟分类为真实分类
-      _categories[oldIndex] = (
-        category: draggedItem.category.copyWith(id: newId),
-        transactionCount: 0,
-        isDefault: true,
-      );
-    }
-
     setState(() {
       final item = _categories.removeAt(oldIndex);
       _categories.insert(newIndex, item);
@@ -242,15 +196,11 @@ class _CategoryGridViewState extends ConsumerState<_CategoryGridView> {
     // 保存新的排序到数据库（批量更新）
     final database = ref.read(databaseProvider);
     await database.transaction(() async {
-      int sortIndex = 0; // 真实分类的排序索引
       for (var i = 0; i < _categories.length; i++) {
         final category = _categories[i].category;
-        if (category.id > 0) { // 只更新数据库中实际存在的分类
-          await (database.update(database.categories)
-                ..where((c) => c.id.equals(category.id)))
-              .write(db.CategoriesCompanion(sortOrder: drift.Value(sortIndex)));
-          sortIndex++; // 每保存一个真实分类，索引加1
-        }
+        await (database.update(database.categories)
+              ..where((c) => c.id.equals(category.id)))
+            .write(db.CategoriesCompanion(sortOrder: drift.Value(i)));
       }
     });
 
@@ -350,26 +300,6 @@ class _CategoryGridViewState extends ConsumerState<_CategoryGridView> {
                     ],
                   ),
                 ),
-                if (!item.isDefault)
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[500],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.categoryCustomTag,
-                        style: const TextStyle(
-                          fontSize: 8,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),
@@ -466,27 +396,6 @@ class _CategoryCard extends ConsumerWidget {
                 ],
               ),
             ),
-            // 自定义分类标签
-            if (!isDefault)
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.orange[500],
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.categoryCustomTag,
-                    style: const TextStyle(
-                      fontSize: 8,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

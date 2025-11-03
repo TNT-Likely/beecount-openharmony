@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../styles/design.dart';
 import '../../widgets/ui/ui.dart';
 import 'amount_text.dart';
 
-class TransactionListItem extends StatelessWidget {
+class TransactionListItem extends ConsumerWidget {
   final IconData icon;
   final String title;
   final double amount;
   final bool isExpense; // 决定正负号
-  final bool hide;
+  final bool? hide; // 改为可选,null时使用全局状态
   final VoidCallback? onTap;
   final VoidCallback? onCategoryTap; // 点击分类图标/名称的回调
   final String? categoryName; // 分类名称，用于显示
@@ -20,7 +21,7 @@ class TransactionListItem extends StatelessWidget {
       required this.title,
       required this.amount,
       required this.isExpense,
-      this.hide = false,
+      this.hide,
       this.onTap,
       this.onCategoryTap,
       this.categoryName,
@@ -28,7 +29,7 @@ class TransactionListItem extends StatelessWidget {
       this.accountName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Widget child = InkWell(
       onTap: onTap,
       child: Padding(
